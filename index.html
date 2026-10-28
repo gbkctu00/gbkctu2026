@@ -138,13 +138,13 @@ section{padding-block:52px;display:grid;gap:22px}
 .post .txt ul{margin:0 0 .9em;padding:0;list-style:none;font-family:var(--goth);font-weight:500}
 .post .txt li{padding-left:1.3em;position:relative;margin-bottom:.35em}
 .post .txt li::before{content:"▶";position:absolute;left:0;font-size:.8em;top:.2em}
-@media (max-width:640px){.post .txt.clip{max-height:10.5em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}}
+@media (max-width:640px){.post .txt.clip{max-height:9.2em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 82%,rgba(0,0,0,.25));mask-image:linear-gradient(#000 82%,rgba(0,0,0,.25))}}
 @media (min-width:641px){.post .more[data-unclip]{display:none}}
 [hidden]{display:none!important}
 .post .foot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#fff;padding:0 12px 12px}
 .post .foot .btn.ghost{color:#1A1A1A;border-color:#CFCFD4}
 .more{background:none;border:0;padding:0;color:var(--red);font-weight:700;cursor:pointer;font-size:14px;justify-self:start}
-.post .more{color:#A3121E}
+.post .more{display:block;width:100%;text-align:center;background:#C8102E;color:#fff;border-radius:6px;padding:11px 0;font-size:15px;margin-top:4px}
 .empty{background:#fff;border:1.5px dashed #BDBDC3;padding:28px 20px;text-align:center;color:#55555C}
 .editor{background:var(--surface);border:2px solid var(--red);border-radius:8px;padding:18px;display:grid;gap:10px}
 .editor h3{font-size:22px}
@@ -543,7 +543,7 @@ function renderFeed(){
       ${p.sub?`<div class="sub">${esc(p.sub)}</div>`:""}
       <div class="page ${ph.length?"has":""}">
         ${ph.length?`<div class="ph r${ph.length-1}">${ph.map((s,i)=>{ const c=(p.captions&&p.captions[i])||(i===0?p.caption:"")||""; return `<button type="button" class="${i===0?"lead":""}" data-zoom="${esc(photoSrc(s))}" data-cap="${esc(c||p.title)}"><img src="${esc(photoSrc(s))}" alt="${esc(c||p.title)}" loading="lazy">${i===0&&c?`<span class="cap">${esc(c)}</span>`:""}</button>`;}).join("")}</div>`:""}
-        ${p.body?`<div style="display:grid;gap:6px;min-width:0"><div class="txt ${long?"clip":""}">${fmtBody(p.body)}</div>${long?`<button class="more" type="button" data-unclip>더 읽기 ＋</button>`:""}</div>`:""}
+        ${p.body?`<div style="display:grid;gap:6px;min-width:0"><div class="txt ${long?"clip":""}">${fmtBody(p.body)}</div>${long?`<button class="more" type="button" data-unclip>▼ 기사 전체 읽기</button>`:""}</div>`:""}
       </div>
       <div class="foot">
         ${p.link?`<a class="btn sm ghost" href="${esc(p.link)}" target="_blank" rel="noopener">영상·자료 보기</a>`:""}
@@ -554,7 +554,7 @@ function renderFeed(){
 }
 $("feedMore").onclick=()=>{ shown+=5; renderFeed(); };
 $("feed").addEventListener("click",e=>{
-  const u=e.target.closest("[data-unclip]"); if(u){ const t=u.previousElementSibling; t.classList.toggle("clip"); u.textContent=t.classList.contains("clip")?"더 읽기 ＋":"접기 －"; return; }
+  const u=e.target.closest("[data-unclip]"); if(u){ const t=u.previousElementSibling; t.classList.toggle("clip"); u.textContent=t.classList.contains("clip")?"▼ 기사 전체 읽기":"▲ 접기"; return; }
   const s=e.target.closest("[data-share]"); if(s){ const p=NEWS.find(x=>x.id===s.dataset.share); if(p){ const n=dayNo(p.date);
     copy(`[선거운동 ${n>=1?n+"일차 ":""}소식] ${p.title}${p.sub?"\n"+p.sub:""}\n${fmtDate(p.date)}${p.place?" · "+p.place:""}\n\n${(p.body||"").slice(0,300)}${(p.body||"").length>300?"…":""}\n\n${slate} 후보조\n${pageUrl()}#n-${p.id}`,"소식 문안을 복사했어요"); } return; }
   const ed=e.target.closest("[data-edit]"); if(ed){ openEditor(NEWS.find(x=>x.id===ed.dataset.edit)); return; }
