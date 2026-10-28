@@ -117,14 +117,16 @@ section{padding-block:52px;display:grid;gap:22px}
 .post .bar .day{background:#C8102E;color:#fff;font-weight:700;padding:0 7px;border-radius:2px;font-size:12.5px}
 .post .sub{font-family:var(--goth);word-break:keep-all;text-wrap:pretty;color:#A3121E;font-weight:700;font-size:clamp(15px,3.9vw,18px);padding:8px 4px 6px 6px;border-bottom:1.5px solid #A3121E}
 .post .page{background:#fff;padding:12px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:8px}
-.post .page.has{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.post .page.has{grid-template-columns:minmax(0,1fr)}
 @media (max-width:640px){.post .page.has{grid-template-columns:minmax(0,1fr)}}
-.post .ph{display:grid;gap:4px;grid-template-columns:repeat(3,1fr);align-content:start}
-.post .ph button{border:0;padding:0;background:#E4E4E7;cursor:zoom-in;aspect-ratio:1/1;overflow:hidden;position:relative}
+.post .ph{display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start}
+.post .ph button{flex:1 1 calc(33.333% - 4px);min-width:calc(33.333% - 4px)}
+.post .ph.r4 button:not(.lead),.post .ph.r2 button:not(.lead){flex-basis:calc(50% - 4px);min-width:calc(50% - 4px)}
+.post .ph button{border:0;padding:0;background:#E4E4E7;cursor:zoom-in;aspect-ratio:4/3;overflow:hidden;position:relative}
 .post .ph img{width:100%;height:100%;object-fit:cover}
 /* 첫 사진은 원래 비율 그대로(찌그러짐·잘림 없음), 나머지는 정사각 썸네일 — 누르면 원본 비율로 크게 */
-.post .ph button.lead{grid-column:1/-1;aspect-ratio:auto;display:grid;place-items:center}
-.post .ph button.lead img{height:auto;max-height:min(70vh,560px);width:auto;max-width:100%;object-fit:contain}
+.post .ph button.lead{flex-basis:100%;min-width:100%;aspect-ratio:auto;display:grid;place-items:center}
+.post .ph button.lead img{width:100%;height:auto;max-height:640px;object-fit:cover;object-position:50% 30%}
 .post .cap{font-family:var(--goth);position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.92);color:#111;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;max-width:calc(100% - 16px);text-align:left}
 .post .txt{text-align:justify;text-justify:inter-character;word-break:normal;font-family:var(--myeong);font-size:15px;line-height:1.75;columns:2 15em;column-gap:22px;column-rule:1px dotted #9A9AA0}
 .post .page.has .txt{columns:1}
@@ -537,7 +539,7 @@ function renderFeed(){
       <div class="bar"><img class="bi" src="img/fist_w.png" alt="">${n>=1?`<span class="day">${n}일차</span>`:""}<h3>${esc(p.title)}</h3><span class="meta">${fmtDate(p.date)}${p.place?" · "+esc(p.place):""}</span></div>
       ${p.sub?`<div class="sub">${esc(p.sub)}</div>`:""}
       <div class="page ${ph.length?"has":""}">
-        ${ph.length?`<div class="ph">${ph.map((s,i)=>{ const c=(p.captions&&p.captions[i])||(i===0?p.caption:"")||""; return `<button type="button" class="${i===0?"lead":""}" data-zoom="${esc(photoSrc(s))}" data-cap="${esc(c||p.title)}"><img src="${esc(photoSrc(s))}" alt="${esc(c||p.title)}" loading="lazy">${i===0&&c?`<span class="cap">${esc(c)}</span>`:""}</button>`;}).join("")}</div>`:""}
+        ${ph.length?`<div class="ph r${ph.length-1}">${ph.map((s,i)=>{ const c=(p.captions&&p.captions[i])||(i===0?p.caption:"")||""; return `<button type="button" class="${i===0?"lead":""}" data-zoom="${esc(photoSrc(s))}" data-cap="${esc(c||p.title)}"><img src="${esc(photoSrc(s))}" alt="${esc(c||p.title)}" loading="lazy">${i===0&&c?`<span class="cap">${esc(c)}</span>`:""}</button>`;}).join("")}</div>`:""}
         ${p.body?`<div style="display:grid;gap:6px;min-width:0"><div class="txt ${long?"clip":""}">${fmtBody(p.body)}</div>${long?`<button class="more" type="button" data-unclip>더 읽기 ＋</button>`:""}</div>`:""}
       </div>
       <div class="foot">
