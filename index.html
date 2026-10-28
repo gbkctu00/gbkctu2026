@@ -205,6 +205,10 @@ section>*{min-width:0}
 .share img{width:100%;border-radius:6px}
 .msg{background:var(--surface);border:1px dashed var(--line);border-radius:6px;padding:16px;font-size:14px;white-space:pre-wrap;margin:0;font-family:var(--body)}
 @media (max-width:620px){.share{grid-template-columns:1fr}}
+.msg .hl{font-weight:900;font-size:1.08em}
+.msg .hl-단단한{color:#D7263D}.msg .hl-당당한{color:#8A3470}.msg .hl-든든한{color:#2A3A8C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .msg .hl-당당한{color:#D28BBE}:root:not([data-theme="light"]) .msg .hl-든든한{color:#8FA2F0}}
+:root[data-theme="dark"] .msg .hl-당당한{color:#D28BBE}:root[data-theme="dark"] .msg .hl-든든한{color:#8FA2F0}
 
 /* 일정 */
 .sched{display:grid;background:var(--surface);border-radius:8px;overflow:hidden}
@@ -490,7 +494,7 @@ document.addEventListener("click",e=>{ const z=e.target.closest("[data-zoom]"); 
 
 // 퍼뜨리기
 const msgText = `민주노총 경북지역본부 16기 임원선거\n${slate} 후보조\n\n오늘을 치열하게! 내일은 치밀하게!\n\n· 투쟁 승리가 곧 조직화의 첩경, 단단한 경북본부\n· 정의로운 산업전환을 준비하는 당당한 경북본부\n· 산별과 지역을 잇는 든든한 경북본부\n\n투표: 11.19(목)~11.25(수)\n${pageUrl()}`;
-$("msg").textContent = msgText;
+$("msg").innerHTML = esc(msgText).replace(/(단단한|당당한|든든한) 경북본부/g,'<b class="hl hl-$1">$1 경북본부</b>');
 $("copyMsg").onclick=()=>copy(msgText,"문안을 복사했어요");
 $("copyUrl").onclick=()=>copy(pageUrl(),"주소를 복사했어요");
 
