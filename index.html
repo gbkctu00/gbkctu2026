@@ -89,18 +89,22 @@ section{padding-block:52px;display:grid;gap:22px}
 
 /* 소식: 노동조합 소식지 지면 형식 */
 .paper{background:#E9E9EB;color:#1A1A1A;border-radius:6px;padding:14px;display:grid;gap:14px;box-shadow:0 1px 0 rgba(0,0,0,.06)}
-.mast{background:#fff;display:grid;border:1px solid #CFCFD4;font-family:var(--goth)}
-.mast .info{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;padding:6px 12px;border-bottom:1px solid #CFCFD4}
-.mast .info b{font-weight:700}
-.mast .cry{text-align:center;font-weight:700;font-size:clamp(13px,3.4vw,16px);padding:6px 10px;border-bottom:3px double #1A1A1A;letter-spacing:.02em}
+.mast{background:#fff;border:2px solid #141414;font-family:var(--goth)}
+.mtop{background:#1F2552;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 14px;font-weight:700;font-size:clamp(13px,3.4vw,17px)}
+.mtop b{color:#FFE300;font-weight:900;font-size:1.2em}
+.mtop span{white-space:nowrap}
+@media (max-width:400px){.mtop{font-size:12px;padding:8px 10px}}
+.mmain{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 14px}
+.slate{font-weight:900;font-size:clamp(21px,5.8vw,36px);letter-spacing:-.03em;line-height:1.15;word-break:keep-all}
+.slate small{display:block;font-size:clamp(12px,3.2vw,16px);font-weight:700;color:#555;letter-spacing:0;margin-bottom:2px}
+.mast .kind{display:inline-block;margin-top:8px;background:#3A3A3E;color:#fff;font-weight:900;font-size:clamp(20px,5.5vw,30px);letter-spacing:.06em;padding:2px 14px;font-family:var(--goth)}
+.when{text-align:center;border-left:3px solid #141414;padding-left:14px}
+.when .d{font-weight:900;font-size:clamp(20px,5.5vw,30px);line-height:1.15;letter-spacing:-.02em;white-space:nowrap}
+.when .d span{font-size:.65em}
+.when .n{display:inline-block;margin-top:8px;background:#C8102E;color:#fff;font-weight:900;font-size:clamp(14px,3.8vw,22px);padding:3px 12px;border-radius:4px;white-space:nowrap}
+.mast .cry{text-align:center;font-weight:700;font-size:clamp(13px,3.4vw,17px);padding:6px;border-top:4px double #141414}
 .mast .cry em{font-style:normal;color:#B3121F}
-.mast .ttl{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 12px}
-.mast .ttl .no{font-family:var(--mono);font-size:12px;text-align:center;line-height:1.3;border:1.5px solid #1A1A1A;padding:4px 8px}
-.mast .ttl .no b{display:block;font-size:22px;font-family:var(--display);font-weight:400}
-.mast .ttl h2{font-family:var(--goth);font-weight:900;background:#3A3A3E;color:#fff;text-align:center;font-size:clamp(24px,6.5vw,38px);padding:8px 10px;letter-spacing:.04em}
-.mast .ttl .dd{font-size:12px;text-align:center;line-height:1.3;color:#B3121F;font-weight:700}
-.mast .ttl .dd b{display:block;font-family:var(--display);font-weight:400;font-size:24px}
-@media (max-width:480px){.mast .ttl{grid-template-columns:1fr 1fr}.mast .ttl h2{grid-column:1/-1;order:-1}}
+@media (max-width:480px){.mmain{grid-template-columns:1fr}.when{border-left:0;border-top:2px solid #141414;padding:10px 0 0;display:flex;align-items:center;justify-content:center;gap:12px}.when .n{margin-top:0}}
 .feed{display:grid;gap:16px}
 .post{display:grid;gap:0;scroll-margin-top:70px}
 .post .bar{background:#141414;color:#fff;padding:12px 20px 12px 22px;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
@@ -275,9 +279,12 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
     <div id="editorSlot"></div>
     <div class="paper">
       <header class="mast">
-        <div class="info"><span><b>발행인:</b> 송무근·최해술·신동연 선거운동본부</span><span><b>편집:</b> 홍보팀</span><span><b>발행일:</b> <span id="mDate"></span></span></div>
-        <div class="cry"><em>단결</em>하는 경북본부! / <em>투쟁</em>하는 경북본부! / 오늘을 치열하게! 내일은 치밀하게!</div>
-        <div class="ttl"><div class="no">선거운동<b id="mDay">-</b>일차</div><h2>선거운동 소식</h2><div class="dd">투표까지<b id="mDD">-</b></div></div>
+        <div class="mtop"><span>민주노총 경북지역본부 16기 임원선거</span><span>투표까지 <b id="mDD">-</b></span></div>
+        <div class="mmain">
+          <div><div class="slate"><small>본부장·수석부본부장·사무처장 후보</small>송무근-최해술-신동연 후보조</div><h2 class="kind">선거운동 소식</h2></div>
+          <div class="when"><div class="d" id="mDate"></div><div class="n">선거운동 <span id="mDay">-</span>일차</div></div>
+        </div>
+        <div class="cry"><em>단결</em>하는 경북본부! / <em>투쟁</em>하는 경북본부!</div>
       </header>
       <div class="feed" id="feed"></div>
       <button class="btn ghost" id="feedMore" type="button" hidden style="justify-self:center;color:#1A1A1A;border-color:#BDBDC3;background:#fff">지난 소식 더 보기</button>
@@ -493,7 +500,7 @@ $("acctCopyNum").onclick=()=>copy(ACCOUNT.number,"계좌번호를 복사했어�
 
 // 선거운동 일차
 (()=>{ const n=dayNo(today), left=Math.round((Date.parse(VOTE_START)-Date.parse(today))/864e5);
-  $("mDate").textContent=today.replace(/-/g,".");
+  { const t=new Date(today+"T00:00:00Z"); $("mDate").innerHTML=`${t.getUTCMonth()+1}월 ${t.getUTCDate()}일<span>(${"일월화수목금토"[t.getUTCDay()]})</span>`; }
   $("mDay").textContent = n>=1 ? n : "-";
   $("mDD").textContent = left>0 ? "D-"+left : left>-7 ? "투표중" : "-"; })();
 
