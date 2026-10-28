@@ -663,7 +663,7 @@ function markPending(root=document){
   });
 }
 document.addEventListener("click",e=>{ if(e.target.closest(".pend")){ e.preventDefault(); e.stopImmediatePropagation(); toast("선관위 승인 후 공개 예정입니다"); } },true);
-markPending();
+markPending(document.getElementById("gallery"));
 /* ===== 바로가기 탭 ===== */
 const tabs=[...document.querySelectorAll(".tabs a")];
 const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){tabs.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id))}})},{rootMargin:"-45% 0px -50% 0px"});
