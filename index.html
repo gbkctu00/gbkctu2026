@@ -245,6 +245,11 @@ footer b{color:var(--ink)}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;z-index:12;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1}
 
+
+/* 선관위 승인 전 홍보물 */
+.pend{position:relative;display:block;cursor:pointer}
+.pend img{filter:grayscale(1) blur(2px);opacity:.28}
+.pend::after{content:"선관위 승인 후 공개 예정";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(24,27,51,.88);color:#fff;font-weight:700;font-size:13px;line-height:1.35;padding:6px 12px;border-radius:12px;text-align:center;width:max-content;max-width:86%;pointer-events:none}
 dialog.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1200px);max-height:92vh}
 dialog.lb::backdrop{background:rgba(8,10,22,.88)}
 dialog.lb img{max-width:min(96vw,1200px);max-height:86vh;object-fit:contain;margin:auto;border-radius:4px}
@@ -642,6 +647,23 @@ let delArm=null;
 function confirmDel(id){ if(delArm===id){ delArm=null; return true; } delArm=id; toast("한 번 더 누르면 지워집니다"); setTimeout(()=>{ if(delArm===id) delArm=null; },4000); return false; }
 loadNews();
 
+
+/* ===== 선관위 승인 전 이미지 처리 ===== */
+const APPROVED=["banner2.webp","careers.webp","kctu_","fist","news/"];   // 승인 난 것(명함)·비홍보물
+const PENDING_RE=/img\/(poster_|booklet)/;   // 공식 선거공보물(포스터·정책자료집)
+function markPending(root=document){
+  root.querySelectorAll("img").forEach(im=>{
+    const s=im.getAttribute("src")||"";
+    if(!PENDING_RE.test(s) || APPROVED.some(a=>s.includes(a))) return;
+    const host=im.closest("button")||im.parentElement;
+    if(host.classList.contains("pend")) return;
+    if(host.tagName!=="BUTTON"){ const w=document.createElement("span"); w.className="pend"; im.replaceWith(w); w.append(im); }
+    else host.classList.add("pend");
+    const t=im.closest(".pend"); t.removeAttribute("data-zoom"); t.setAttribute("aria-label","선관위 승인 후 공개 예정");
+  });
+}
+document.addEventListener("click",e=>{ if(e.target.closest(".pend")){ e.preventDefault(); e.stopImmediatePropagation(); toast("선관위 승인 후 공개 예정입니다"); } },true);
+markPending();
 /* ===== 바로가기 탭 ===== */
 const tabs=[...document.querySelectorAll(".tabs a")];
 const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){tabs.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id))}})},{rootMargin:"-45% 0px -50% 0px"});
