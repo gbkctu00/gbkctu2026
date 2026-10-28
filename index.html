@@ -338,7 +338,7 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
     <div class="acct">
       <span class="eyebrow">선거운동 후원계좌</span>
       <p class="acctline" id="acctLine"></p>
-      <div class="row"><button class="btn sm" id="acctCopyNum" type="button">계좌번호만 복사</button><button class="btn sm ghost" id="acctCopyAll" type="button">은행·예금주까지 복사</button></div>
+      <div class="row"><button class="btn sm" id="acctCopyNum" type="button">계좌번호 복사</button></div>
       <span class="note">송무근-최해술-신동연 선거운동 후원계좌입니다. 동지들의 성원 부탁드립니다.</span>
     </div>
   </section>
@@ -371,7 +371,6 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
   <footer>
     <b>송무근·최해술·신동연 선거운동본부</b>
     <span>민주노총 경북지역본부 16기 임원선거 · 단결하는 경북본부! 투쟁하는 경북본부!</span>
-    <span>선거운동 후원계좌: 카카오뱅크 3333-38-2660286 (예금주 신동연)</span>
   </footer>
 </main>
 
@@ -478,7 +477,7 @@ $("gallery").innerHTML = GALLERY.map(g=>`<button type="button" class="${g.w?"w":
 document.addEventListener("click",e=>{ const z=e.target.closest("[data-zoom]"); if(z){ zoom(z.dataset.zoom,z.dataset.cap); } });
 
 // 퍼뜨리기
-const msgText = `민주노총 경북지역본부 16기 임원선거\n${slate} 후보조\n\n오늘을 치열하게! 내일은 치밀하게!\n\n· 투쟁 승리가 곧 조직화의 첩경, 단단한 경북본부\n· 정의로운 산업전환을 준비하는 당당한 경북본부\n· 산별과 지역을 잇는 든든한 경북본부\n\n투표: 11.19(목)~11.25(수)\n\n선거운동 후원계좌\n${ACCOUNT.bank} ${ACCOUNT.number} (예금주 ${ACCOUNT.holder})\n\n${pageUrl()}`;
+const msgText = `민주노총 경북지역본부 16기 임원선거\n${slate} 후보조\n\n오늘을 치열하게! 내일은 치밀하게!\n\n· 투쟁 승리가 곧 조직화의 첩경, 단단한 경북본부\n· 정의로운 산업전환을 준비하는 당당한 경북본부\n· 산별과 지역을 잇는 든든한 경북본부\n\n투표: 11.19(목)~11.25(수)\n${pageUrl()}`;
 $("msg").textContent = msgText;
 $("copyMsg").onclick=()=>copy(msgText,"문안을 복사했어요");
 $("copyUrl").onclick=()=>copy(pageUrl(),"주소를 복사했어요");
@@ -489,7 +488,7 @@ $("sched").innerHTML = SCHED.map(e=>`<div class="ev ${e.key?"key":""} ${e.d<toda
 const acctText=`${ACCOUNT.bank} ${ACCOUNT.number} (예금주 ${ACCOUNT.holder})`;
 $("acctLine").innerHTML=`${esc(ACCOUNT.bank)} <span class="n">${esc(ACCOUNT.number)}</span><br>예금주 ${esc(ACCOUNT.holder)}`;
 $("acctCopyNum").onclick=()=>copy(ACCOUNT.number,"계좌번호를 복사했어요");
-$("acctCopyAll").onclick=()=>copy(acctText,"계좌 정보를 복사했어요");
+
 
 // 선거운동 일차
 (()=>{ const n=dayNo(today), left=Math.round((Date.parse(VOTE_START)-Date.parse(today))/864e5);
