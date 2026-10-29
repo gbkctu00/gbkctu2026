@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="light" style="color-scheme:only light">
 <head>
 <meta charset="utf-8">
-<meta name="color-scheme" content="light dark">
-<meta name="supported-color-schemes" content="light dark">
+<meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light only">
 <meta name="darkreader-lock">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="민주노총 경북지역본부 16기 임원선거 단독후보 송무근·최해술·신동연 — 오늘을 치열하게! 내일은 치밀하게!">
@@ -27,7 +27,7 @@
   --mono:"IBM Plex Mono",ui-monospace,monospace;
   --goth:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --myeong:"Noto Serif KR","Nanum Myeongjo","AppleMyungjo",serif;
-  color-scheme:light;
+  color-scheme:only light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0F1224; --surface:#191D36; --ink:#ECEDF5; --muted:#A0A4BC; --line:#2C3150;
@@ -671,7 +671,7 @@ function markPending(root=document){
   });
 }
 document.addEventListener("click",e=>{ if(e.target.closest(".pend")){ e.preventDefault(); e.stopImmediatePropagation(); toast("선관위 승인 후 공개 예정입니다"); } },true);
-markPending(document.getElementById("gallery"));
+/* 선관위 승인 완료(10.29) — 흐림 처리 해제 */
 /* ===== 바로가기 탭 ===== */
 const tabs=[...document.querySelectorAll(".tabs a")];
 const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){tabs.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id))}})},{rootMargin:"-45% 0px -50% 0px"});
