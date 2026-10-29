@@ -135,6 +135,8 @@ section{padding-block:52px;display:grid;gap:22px}
 .post .txt{text-align:justify;text-justify:inter-character;word-break:normal;font-family:var(--myeong);font-size:15px;line-height:1.75;columns:2 15em;column-gap:22px;column-rule:1px dotted #9A9AA0}
 .post .page.has .txt{columns:1}
 .post .txt p{margin:0 0 .9em;break-inside:avoid-column}
+.post .txt .sh{font-family:var(--goth);font-weight:900;font-size:1.08em;color:#A3121E;margin:1.1em 0 .35em;break-after:avoid}
+.post .txt .sh::before{content:"■ "}
 .post .txt ul{margin:0 0 .9em;padding:0;list-style:none;font-family:var(--goth);font-weight:500}
 .post .txt li{padding-left:1.3em;position:relative;margin-bottom:.35em}
 .post .txt li::before{content:"▶";position:absolute;left:0;font-size:.8em;top:.2em}
@@ -530,6 +532,7 @@ const photoSrc = p => localBlobs[p] || p;
 function fmtBody(t){ // 빈 줄=문단, '-'·'▶'·'·'로 시작하는 줄=▶ 목록
   return String(t||"").split(/\n\s*\n/).map(blk=>{ const ls=blk.split("\n").filter(x=>x.trim());
     if(ls.length && ls.every(l=>/^\s*[-▶·•]/.test(l))) return "<ul>"+ls.map(l=>`<li>${esc(l.replace(/^\s*[-▶·•]\s*/,""))}</li>`).join("")+"</ul>";
+    if(ls.length && /^■/.test(ls[0])){ const h=`<h4 class="sh">${esc(ls[0].replace(/^■\s*/,""))}</h4>`; return ls.length>1?h+`<p>${ls.slice(1).map(esc).join("<br>")}</p>`:h; }
     return `<p>${ls.map(esc).join("<br>")}</p>`; }).join(""); }
 function renderFeed(){
   const list=[...NEWS].sort((a,b)=>(b.date+b.at).localeCompare(a.date+a.at));
