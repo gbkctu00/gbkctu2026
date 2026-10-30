@@ -258,6 +258,16 @@ footer b{color:var(--ink)}
 .pend{position:relative;display:block;cursor:pointer}
 .pend img{filter:grayscale(1) blur(2px);opacity:.28}
 .pend::after{content:"선관위 승인 후 공개 예정";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(24,27,51,.88);color:#fff;font-weight:700;font-size:13px;line-height:1.35;padding:6px 12px;border-radius:12px;text-align:center;width:max-content;max-width:86%;pointer-events:none}
+#news{padding-top:28px}
+#editorSlot:empty{display:none}
+.nhead{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;background:#1F2552;color:#fff;border-radius:8px;padding:14px 16px;border-left:8px solid #C8102E;box-shadow:0 2px 0 rgba(0,0,0,.08)}
+.nhead img{height:46px;width:auto}
+.nhead .nt{display:grid;gap:2px;min-width:0}
+.nhead .nt b{font-family:var(--goth);font-weight:900;font-size:clamp(22px,6.2vw,30px);letter-spacing:-.02em;line-height:1.1}
+.nhead .nt span{font-size:13px;opacity:.85;word-break:keep-all}
+.nhead .nd{display:flex;align-items:baseline;gap:2px;background:rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;white-space:nowrap}
+.nhead .nd small{font-size:12px;font-weight:700;opacity:.85}
+.nhead .nd b{font-family:var(--goth);font-weight:900;font-size:28px;color:#FFE300;line-height:1;margin:0 2px}
 dialog.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1200px);max-height:92vh}
 dialog.lb::backdrop{background:rgba(8,10,22,.88)}
 dialog.lb img{max-width:min(96vw,1200px);max-height:86vh;object-fit:contain;margin:auto;border-radius:4px}
@@ -295,7 +305,11 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
   </section>
 
   <section id="news">
-    <div class="eyebrow">선거운동 소식</div>
+    <div class="nhead">
+      <img src="img/fist_w.png" alt="">
+      <div class="nt"><b>선거운동 소식</b><span>날마다 찾아간 현장 이야기</span></div>
+      <div class="nd"><small>오늘</small><b id="nhDay">-</b><small>일차</small></div>
+    </div>
     <div id="editorSlot"></div>
     <div class="paper">
       <header class="mast">
@@ -523,6 +537,7 @@ $("acctCopyNum").onclick=()=>copy(ACCOUNT.number,"계좌번호를 복사했어�
 (()=>{ const n=dayNo(today), left=Math.round((Date.parse(VOTE_START)-Date.parse(today))/864e5);
   { const t=new Date(today+"T00:00:00Z"); $("mDate").innerHTML=`${t.getUTCMonth()+1}월 ${t.getUTCDate()}일<span>(${"일월화수목금토"[t.getUTCDay()]})</span>`; }
   $("mDay").textContent = n>=1 ? n : "-";
+  if($("nhDay")) $("nhDay").textContent = n>=1 ? n : "-";
   $("mDD").textContent = left>0 ? "D-"+left : left>-7 ? "투표중" : "-"; })();
 
 /* ===== 선거운동 소식 (news.json) ===== */
