@@ -384,6 +384,31 @@ footer b{color:var(--ink)}
   .share.in .pt .ac{transform-origin:50% 92%;animation:upf .5s cubic-bezier(.2,.8,.2,1) 1.95s both,accp 4s ease-in-out 3s infinite}
   .share.in .pt .sh{animation:shine 5s ease-in-out 2.6s infinite}
 }
+
+/* 제목·서명 애니메이션 */
+@keyframes ebIn{from{letter-spacing:.6em;opacity:0}to{letter-spacing:.12em;opacity:1}}
+@keyframes ebBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes inkIn{0%{transform:translateY(-40%) scale(1.6) rotate(-6deg);opacity:0;filter:blur(4px)}60%{transform:translateY(4%) scale(.95);opacity:1;filter:none}100%{transform:none;opacity:1}}
+@keyframes hwave{0%,80%,100%{transform:none}86%{transform:translateY(-14%)}92%{transform:translateY(3%)}}
+@keyframes seal{0%{transform:scale(2.4) rotate(-20deg);opacity:0}55%{transform:scale(.9) rotate(-6deg);opacity:1}100%{transform:rotate(-6deg);opacity:1}}
+.speech .sign{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;word-break:keep-all}
+.speech .sign .sg{display:inline-flex;gap:5px;align-items:baseline}
+.speech .sign .sg small{font-size:13px;color:var(--muted);font-weight:700}
+.speech .sign .sg b{font-family:var(--goth);font-weight:900;font-size:21px;color:var(--ink)}
+.speech .sign .bs{display:inline-block;border:2.5px solid var(--red);color:var(--red);border-radius:6px;padding:1px 8px;font-family:var(--goth);font-weight:900;font-size:18px;transform:rotate(-6deg);margin-left:4px}
+@media (prefers-reduced-motion:no-preference){
+  .tt .w,.tt .c{display:inline-block;opacity:0}
+  .tt.in .w{animation:wd .6s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(.1s + var(--i)*.16s)}
+  .tt.in .c{animation:inkIn .45s cubic-bezier(.2,.9,.3,1.2) both,hwave 5s ease-in-out infinite;animation-delay:calc(.15s + var(--k)*.06s),calc(2.5s + var(--k)*.05s)}
+  .eyebrow.ebo{opacity:0;display:inline-flex;align-items:center;gap:8px}
+  .eyebrow.ebo::before{content:"";width:22px;height:3px;background:var(--red);transform:scaleX(0);transform-origin:left;border-radius:2px}
+  .eyebrow.ebo.in{animation:ebIn .7s cubic-bezier(.2,.8,.2,1) both}
+  .eyebrow.ebo.in::before{animation:ebBar .5s cubic-bezier(.6,0,.2,1) .35s both}
+  .speech .sign .sg,.speech .sign .bs{opacity:0}
+  .speech .sign.in .sg{animation:slideR .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.15s + var(--i)*.3s)}
+  .speech .sign.in .sg b{display:inline-block;animation:stamp .5s cubic-bezier(.2,.9,.3,1.25) both;animation-delay:calc(.3s + var(--i)*.3s)}
+  .speech .sign.in .bs{animation:seal .55s cubic-bezier(.2,.9,.3,1.3) 1.3s both}
+}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -687,7 +712,7 @@ $("cands").innerHTML = CANDS.map(c=>`
   </article>`).join("");
 
 // 출마의 변
-$("speechBody").innerHTML = SPEECH.map(p=>`<p>${esc(p)}</p>`).join("") + `<p class="sign">본부장 후보 송무근, 수석부본부장 후보 최해술, 사무처장 후보 신동연 배상</p>`;
+$("speechBody").innerHTML = SPEECH.map(p=>`<p>${esc(p)}</p>`).join("") + `<p class="sign" aria-label="본부장 후보 송무근, 수석부본부장 후보 최해술, 사무처장 후보 신동연 배상"><span class="sg" style="--i:0"><small>본부장 후보</small><b>송무근</b></span><span class="sg" style="--i:1"><small>수석부본부장 후보</small><b>최해술</b></span><span class="sg" style="--i:2"><small>사무처장 후보</small><b>신동연</b></span><span class="bs">배상</span></p>`;
 $("speechMore").onclick=()=>{ const b=$("speechBody"); const open=b.classList.toggle("clip"); $("speechMore").textContent = open ? "전문 읽기 ＋" : "접기 －"; };
 
 // 홍보물
@@ -923,6 +948,17 @@ $("voiceForm").addEventListener("submit",async e=>{
         const p=document.createElement("div"); p.textContent=v.text; el.append(m,p); box.append(el); });
     },()=>{});
   }
+})();
+
+// 제목·서명 애니메이션
+(()=>{ const io3="IntersectionObserver" in window ? new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io3.unobserve(e.target);} }),{rootMargin:"0px 0px -10% 0px"}) : null;
+  const obs=el=>io3?io3.observe(el):el.classList.add("in");
+  document.querySelectorAll("main section > h2, section > h2").forEach(h=>{ if(h.querySelector(".w")||h.closest(".first")) return;
+    h.classList.add("tt"); let n=0; h.innerHTML=h.textContent.split(/(\s+)/).map(w=>/^\s+$/.test(w)?w:`<span class="w" style="--i:${n++}">${w}</span>`).join(""); obs(h); });
+  document.querySelectorAll(".speech h3").forEach(h=>{ h.classList.add("tt"); h.setAttribute("aria-label",h.textContent); let k=0;
+    h.innerHTML=h.textContent.split(" ").map(w=>`<span style="white-space:nowrap">${[...w].map(c=>`<span class="c" aria-hidden="true" style="--k:${k++}">${c}</span>`).join("")}</span>`).join(" "); obs(h); });
+  document.querySelectorAll("section > .eyebrow, .speech .eyebrow").forEach(e=>{ e.classList.add("ebo"); obs(e); });
+  const sg=document.querySelector(".speech .sign"); if(sg) obs(sg);
 })();
 </script>
 
