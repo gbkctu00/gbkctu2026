@@ -409,6 +409,35 @@ footer b{color:var(--ink)}
   .speech .sign.in .sg b{display:inline-block;animation:stamp .5s cubic-bezier(.2,.9,.3,1.25) both;animation-delay:calc(.3s + var(--i)*.3s)}
   .speech .sign.in .bs{animation:seal .55s cubic-bezier(.2,.9,.3,1.3) 1.3s both}
 }
+
+/* 일지 제목·현장 이름 애니메이션 */
+@keyframes barWipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes fistPunch{0%{transform:translateY(60%) scale(.4) rotate(-25deg);opacity:0}55%{transform:translateY(-18%) scale(1.25) rotate(8deg);opacity:1}75%{transform:translateY(4%) scale(.95)}100%{transform:none;opacity:1}}
+@keyframes fistLoop{0%,84%,100%{transform:none}89%{transform:translateY(-22%) rotate(-8deg) scale(1.1)}95%{transform:translateY(4%)}}
+@keyframes lineDraw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes siteIn{0%{transform:translateY(70%);opacity:0}70%{transform:translateY(-8%);opacity:1}100%{transform:none;opacity:1}}
+.post .sub{position:relative}
+.post .sub .st{display:inline-block}
+@media (prefers-reduced-motion:no-preference){
+  .post.rv .bar{clip-path:inset(0 100% 0 0)}
+  .post.in .bar{animation:barWipe .6s cubic-bezier(.7,0,.2,1) .1s both}
+  .post.rv .bar .bi,.post.rv .bar .day{opacity:0}
+  .post.in .bar .bi{animation:fistPunch .6s cubic-bezier(.2,.9,.3,1.2) .55s both,fistLoop 4s ease-in-out 2.5s infinite}
+  .post.in .bar .day{animation:stamp .5s cubic-bezier(.2,.9,.3,1.25) .75s both}
+  .post .bar h3 .w{display:inline-block;opacity:0}
+  .post.in .bar h3 .w{animation:wd .5s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(.85s + var(--i)*.09s)}
+  .post.rv .bar .meta{opacity:0}
+  .post.in .bar .meta{animation:upf .5s ease 1.5s both}
+  .post.rv .sub{border-bottom-color:transparent}
+  .post .sub::after{content:"";position:absolute;left:0;right:0;bottom:-1.5px;height:1.5px;background:#A3121E;transform:scaleX(0);transform-origin:left}
+  .post.in .sub::after{animation:lineDraw .8s cubic-bezier(.6,0,.2,1) 1.4s both}
+  .post .sub .st{opacity:0}
+  .post.in .sub .st{animation:siteIn .5s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(1.55s + var(--i)*.22s)}
+  .post .txt .sh{opacity:0;transform:translateX(-18px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+  .post .txt .sh.in{opacity:1;transform:none}
+  .post .txt .sh::before{display:inline-block;transition:transform .5s cubic-bezier(.2,.9,.3,1.4) .2s;transform:scale(0) rotate(-90deg)}
+  .post .txt .sh.in::before{transform:none}
+}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -959,6 +988,19 @@ $("voiceForm").addEventListener("submit",async e=>{
     h.innerHTML=h.textContent.split(" ").map(w=>`<span style="white-space:nowrap">${[...w].map(c=>`<span class="c" aria-hidden="true" style="--k:${k++}">${c}</span>`).join("")}</span>`).join(" "); obs(h); });
   document.querySelectorAll("section > .eyebrow, .speech .eyebrow").forEach(e=>{ e.classList.add("ebo"); obs(e); });
   const sg=document.querySelector(".speech .sign"); if(sg) obs(sg);
+})();
+
+// 일지 제목·현장 이름 준비
+(()=>{ const ioS="IntersectionObserver" in window ? new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); ioS.unobserve(e.target);} }),{rootMargin:"0px 0px -6% 0px"}) : null;
+  const wrapWords=(el,cls)=>{ let n=0; [...el.childNodes].forEach(nd=>{ if(nd.nodeType!==3) return; const f=document.createDocumentFragment();
+      nd.textContent.split(/(\s+)/).forEach(w=>{ if(!w) return; if(/^\s+$/.test(w)) f.append(w); else { const s=document.createElement("span"); s.className=cls; s.style.setProperty("--i",n++); s.textContent=w; f.append(s);} }); nd.replaceWith(f); }); };
+  const prep=p=>{ if(p.dataset.anim) return; p.dataset.anim=1;
+    const h=p.querySelector(".bar h3"); if(h) wrapWords(h,"w");
+    const sb=p.querySelector(".sub"); if(sb && !sb.querySelector(".st")){ const parts=sb.textContent.split(/(\s*·\s*)/); let n=0;
+      sb.innerHTML=parts.map(t=>/·/.test(t)?t:`<span class="st" style="--i:${n++}">${esc(t)}</span>`).join(""); }
+    p.querySelectorAll(".txt .sh").forEach(s=>ioS?ioS.observe(s):s.classList.add("in")); };
+  const run=()=>document.querySelectorAll(".post").forEach(prep); run();
+  const fd=document.getElementById("feed"); if(fd) new MutationObserver(run).observe(fd,{childList:true,subtree:true});
 })();
 </script>
 
