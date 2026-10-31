@@ -292,6 +292,30 @@ footer b{color:var(--ink)}
 .mq span{font-family:var(--goth);font-weight:900;font-size:15px;padding:9px 0;letter-spacing:-.01em}
 .mq span i{font-style:normal;color:#FFE300;margin:0 16px}
 .mq span em{font-style:normal;color:#FF8A96}
+
+/* 약속 섹션 애니메이션 */
+@keyframes stamp{0%{transform:scale(2.2) rotate(-8deg);opacity:0}60%{transform:scale(.92) rotate(1deg);opacity:1}100%{transform:none;opacity:1}}
+@keyframes bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes wd{from{transform:translateY(60%);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:no-preference){
+  #pledge h2 .w{display:inline-block;opacity:0}
+  #pledge h2.in .w{animation:wd .6s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(var(--i)*.18s)}
+  .pillars .pillar:nth-child(2){transition-delay:.12s}.pillars .pillar:nth-child(3){transition-delay:.24s}
+  .pillar .hd{position:relative;border-top-color:transparent}
+  .pillar .hd::before{content:"";position:absolute;left:0;right:0;top:-6px;height:6px;background:var(--c);transform:scaleX(0);transform-origin:left}
+  .pillar.in .hd::before{animation:bar .7s cubic-bezier(.6,0,.2,1) .25s both}
+  .pillar h3 em{display:inline-block;opacity:0}
+  .pillar.in h3 em{animation:stamp .55s cubic-bezier(.2,.9,.3,1.2) .55s both}
+  .pillar .sub,.pillar .grp b,.pillar li{opacity:0;transform:translateX(-14px);transition:opacity .45s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+  .pillar .sub{transition-delay:.4s}
+  .pillar.in .sub,.pillar.in .grp b,.pillar.in li{opacity:1;transform:none}
+  .pillar.in .grp b,.pillar.in li{transition-delay:calc(.8s + var(--i)*.07s)}
+  .century h3 em{background:linear-gradient(transparent 62%,rgba(255,227,0,.75) 62%) no-repeat 0 0/0% 100%;transition:background-size .9s cubic-bezier(.6,0,.2,1) .5s}
+  .century.in h3 em{background-size:100% 100%}
+  .century li{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+  .century.in li{opacity:1;transform:none}
+  .century.in li:nth-child(1){transition-delay:.7s}.century.in li:nth-child(2){transition-delay:.9s}
+}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -568,6 +592,13 @@ $("pillars").innerHTML = PILLARS.map(p=>`
     ${p.groups.map(g=>`<div class="grp"><b>${esc(g.t)}</b><ul>${g.li.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}
   </article>`).join("");
 
+
+// 약속 애니메이션 준비
+document.querySelectorAll(".pillar").forEach(p=>{ let i=0; p.querySelectorAll(".grp b,.grp li").forEach(el=>el.style.setProperty("--i",i++)); });
+(()=>{ const h=document.querySelector("#pledge h2"); if(!h) return;
+  h.innerHTML=h.textContent.split(/(\s+)/).map((w,i)=>/\s/.test(w)?w:`<span class="w" style="--i:${i/2}">${w}</span>`).join("");
+  if(!("IntersectionObserver" in window)){h.classList.add("in");return;}
+  const o=new IntersectionObserver(es=>{ if(es[0].isIntersecting){ h.classList.add("in"); o.disconnect(); } },{rootMargin:"0px 0px -10% 0px"}); o.observe(h); })();
 // 후보
 $("cands").innerHTML = CANDS.map(c=>`
   <article class="cand" id="c-${c.id}">
