@@ -268,6 +268,30 @@ footer b{color:var(--ink)}
 .nhead .nd{display:flex;align-items:baseline;gap:2px;background:rgba(255,255,255,.1);border-radius:6px;padding:6px 10px;white-space:nowrap}
 .nhead .nd small{font-size:12px;font-weight:700;opacity:.85}
 .nhead .nd b{font-family:var(--goth);font-weight:900;font-size:28px;color:#FFE300;line-height:1;margin:0 2px}
+
+/* ===== 첫 화면·스크롤 애니메이션 ===== */
+@keyframes kb{from{transform:scale(1.08);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes up{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+@keyframes slideL{from{transform:translateX(-24px);opacity:0}to{transform:none;opacity:1}}
+@keyframes bar{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@media (prefers-reduced-motion:no-preference){
+  .board .wide,.board .mob{animation:kb 1.4s cubic-bezier(.2,.7,.2,1) both}
+  .board .names a{animation:up .7s cubic-bezier(.2,.8,.2,1) both}
+  .board .names a:nth-child(1){animation-delay:.55s}.board .names a:nth-child(2){animation-delay:.7s}.board .names a:nth-child(3){animation-delay:.85s}
+  .vision a{position:relative;animation:slideL .7s cubic-bezier(.2,.8,.2,1) both}
+  .vision a:nth-child(1){animation-delay:1s}.vision a:nth-child(2){animation-delay:1.15s}.vision a:nth-child(3){animation-delay:1.3s}
+  .rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  .nhead .nd b.go{animation:pulse .6s ease 1}
+  .mq-track{animation:mq 28s linear infinite}
+}
+.mq{overflow:hidden;background:#1F2552;color:#fff;border-radius:6px;margin-top:2px}
+.mq-track{display:flex;width:max-content;white-space:nowrap}
+.mq span{font-family:var(--goth);font-weight:900;font-size:15px;padding:9px 0;letter-spacing:-.01em}
+.mq span i{font-style:normal;color:#FFE300;margin:0 16px}
+.mq span em{font-style:normal;color:#FF8A96}
 dialog.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1200px);max-height:92vh}
 dialog.lb::backdrop{background:rgba(8,10,22,.88)}
 dialog.lb img{max-width:min(96vw,1200px);max-height:86vh;object-fit:contain;margin:auto;border-radius:4px}
@@ -297,6 +321,7 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
         <a href="#c-shin"><small>사무처장 후보</small><b>신동연</b></a>
       </nav>
     </div>
+    <div class="mq" aria-hidden="true"><div class="mq-track"><span id="mqText"></span><span id="mqText2"></span></div></div>
     <nav class="vision" aria-label="세 가지 경북본부">
       <a href="#p-dan" style="--c:#D7263D">투쟁 승리가 곧 조직화의 첩경, <b>단단한 경북본부!</b></a>
       <a href="#p-dang" style="--c:#6E2A5A">정의로운 산업전환을 준비하는 <b>당당한 경북본부!</b></a>
@@ -687,6 +712,20 @@ function markPending(root=document){
 }
 document.addEventListener("click",e=>{ if(e.target.closest(".pend")){ e.preventDefault(); e.stopImmediatePropagation(); toast("선관위 승인 후 공개 예정입니다"); } },true);
 /* 선관위 승인 완료(10.29) — 흐림 처리 해제 */
+
+(()=>{ const left=Math.round((Date.parse(VOTE_START)-Date.parse(kst()))/864e5);
+  const t=`오늘을 치열하게! 내일은 치밀하게!<i>●</i><em>단단한</em> 경북본부<i>●</i><em>당당한</em> 경북본부<i>●</i><em>든든한</em> 경북본부<i>●</i>투표 11.19(목)~11.25(수)${left>0?` <i>D-${left}</i>`:""}<i>●</i>`;
+  if($("mqText")){ $("mqText").innerHTML=t; $("mqText2").innerHTML=t; } })();
+
+/* ===== 스크롤 등장 효과 ===== */
+(()=>{ const sel=".nhead,.post,.pillar,.century,.cand,.speech,.gallery button,.share,.sched,.acct,.voice form,.formgo";
+  const io2="IntersectionObserver" in window ? new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io2.unobserve(e.target);} }),{rootMargin:"0px 0px -8% 0px"}) : null;
+  const scan=()=>document.querySelectorAll(sel).forEach(el=>{ if(el.classList.contains("rv")) return; el.classList.add("rv"); io2?io2.observe(el):el.classList.add("in"); });
+  scan(); new MutationObserver(scan).observe(document.getElementById("feed"),{childList:true});
+  // 오늘 일차 숫자 올라가기
+  const d=document.getElementById("nhDay"); if(d && io2){ const t=parseInt(d.textContent)||0; if(t>0){ d.textContent="0";
+    const o=new IntersectionObserver(es=>{ if(es[0].isIntersecting){ o.disconnect(); let i=0; const st=setInterval(()=>{ i++; d.textContent=i; if(i>=t){clearInterval(st); d.classList.add("go");} },90);} }); o.observe(d);} }
+})();
 /* ===== 바로가기 탭 ===== */
 const tabs=[...document.querySelectorAll(".tabs a")];
 const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){tabs.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id))}})},{rootMargin:"-45% 0px -50% 0px"});
