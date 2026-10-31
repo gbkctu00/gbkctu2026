@@ -363,6 +363,27 @@ footer b{color:var(--ink)}
   .cand.in h3 .nc{animation:stamp .5s cubic-bezier(.2,.9,.3,1.25) calc(1s + var(--k)*.14s) both}
 }
 @media (prefers-reduced-motion:reduce){.cand .pic .fx,.cand .pic .gl,.cand .pic .ch{display:none}}
+
+/* 퍼뜨리기 포스터 붙이기 애니메이션 */
+.share .pt{position:relative;width:100%;aspect-ratio:1100/1168;border-radius:6px;overflow:hidden;background:#e1e1e3}
+.share .pt img{position:absolute;inset:0;width:100%;height:100%;border-radius:0}
+.share .pt .pp{filter:drop-shadow(0 5px 6px rgba(0,0,0,.16))}
+.share .pt .sh{position:absolute;top:0;bottom:0;left:0;width:30%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-150%) skewX(-18deg);pointer-events:none}
+@keyframes paste{0%{transform:translateY(-70%) rotate(-9deg) scale(1.18);opacity:0;filter:drop-shadow(0 30px 24px rgba(0,0,0,.28))}55%{opacity:1}72%{transform:translateY(2%) rotate(1.2deg) scale(.99)}86%{transform:translateY(-1%) rotate(-.4deg)}100%{transform:none;opacity:1;filter:drop-shadow(0 5px 6px rgba(0,0,0,.16))}}
+@keyframes slapL{0%{transform:scale(2) rotate(-22deg);opacity:0}60%{transform:scale(.94) rotate(1deg);opacity:1}100%{transform:none;opacity:1}}
+@keyframes slapR{0%{transform:scale(2) rotate(22deg);opacity:0}60%{transform:scale(.94) rotate(-1deg);opacity:1}100%{transform:none;opacity:1}}
+@keyframes upf{from{transform:translateY(40%);opacity:0}to{transform:none;opacity:1}}
+@keyframes accp{0%,82%,100%{transform:none}88%{transform:scale(1.06)}94%{transform:scale(.99)}}
+@keyframes shine{0%,70%{transform:translateX(-150%) skewX(-18deg)}100%{transform:translateX(420%) skewX(-18deg)}}
+@media (prefers-reduced-motion:no-preference){
+  .share .pt .pp,.share .pt .tl,.share .pt .tr,.share .pt .bx,.share .pt .ac{opacity:0}
+  .share.in .pt .pp{transform-origin:50% 10%;animation:paste 1s cubic-bezier(.3,.7,.3,1) .2s both}
+  .share.in .pt .tl{transform-origin:19% 17%;animation:slapL .45s cubic-bezier(.2,.9,.3,1.2) 1.05s both}
+  .share.in .pt .tr{transform-origin:80% 17%;animation:slapR .45s cubic-bezier(.2,.9,.3,1.2) 1.35s both}
+  .share.in .pt .bx{animation:upf .5s cubic-bezier(.2,.8,.2,1) 1.75s both}
+  .share.in .pt .ac{transform-origin:50% 92%;animation:upf .5s cubic-bezier(.2,.8,.2,1) 1.95s both,accp 4s ease-in-out 3s infinite}
+  .share.in .pt .sh{animation:shine 5s ease-in-out 2.6s infinite}
+}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -504,7 +525,15 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
     <div class="eyebrow">퍼뜨리기</div>
     <h2>카톡·문자로 알려 주세요</h2>
     <div class="share">
-      <img src="img/poster_tape.webp" width="1100" height="1168" alt="세 후보 단체 포스터와 후원 계좌 안내" loading="lazy">
+      <div class="pt" role="img" aria-label="세 후보 단체 포스터와 후원 계좌 안내. 카카오뱅크 3333-38-2660286, 예금주 신동연">
+        <img class="w" src="img/pt_wall.webp" width="1100" height="1168" alt="" loading="lazy">
+        <img class="pp" src="img/pt_paper.webp" width="1100" height="1168" alt="" loading="lazy">
+        <img class="tl" src="img/pt_tapeL.webp" width="1100" height="1168" alt="" loading="lazy">
+        <img class="tr" src="img/pt_tapeR.webp" width="1100" height="1168" alt="" loading="lazy">
+        <img class="bx" src="img/pt_box.webp" width="1100" height="1168" alt="" loading="lazy">
+        <img class="ac" src="img/pt_acc.webp" width="1100" height="1168" alt="" loading="lazy">
+        <i class="sh"></i>
+      </div>
       <div style="display:grid;gap:12px;min-width:0">
         <pre class="msg" id="msg"></pre>
         <div class="row"><button class="btn" id="copyMsg" type="button">문안 복사</button><button class="btn ghost" id="copyUrl" type="button">주소만 복사</button></div>
