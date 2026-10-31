@@ -310,12 +310,31 @@ footer b{color:var(--ink)}
   .pillar .sub{transition-delay:.4s}
   .pillar.in .sub,.pillar.in .grp b,.pillar.in li{opacity:1;transform:none}
   .pillar.in .grp b,.pillar.in li{transition-delay:calc(.8s + var(--i)*.07s)}
-  .century h3 em{background:linear-gradient(transparent 62%,rgba(255,227,0,.75) 62%) no-repeat 0 0/0% 100%;transition:background-size .9s cubic-bezier(.6,0,.2,1) .5s}
+  .century h3 em{background:linear-gradient(transparent 86%,#FFE300 86%) no-repeat 0 0/0% 100%;transition:background-size .9s cubic-bezier(.6,0,.2,1) .5s}
   .century.in h3 em{background-size:100% 100%}
   .century li{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
   .century.in li{opacity:1;transform:none}
   .century.in li:nth-child(1){transition-delay:.7s}.century.in li:nth-child(2){transition-delay:.9s}
 }
+
+/* 단단·당당·든든 강조 */
+@keyframes ring{0%{transform:translate(-50%,-50%) scale(.2);opacity:.9}100%{transform:translate(-50%,-50%) scale(1.7);opacity:0}}
+@keyframes wave{0%,22%,100%{transform:none}7%{transform:translateY(-18%) scale(1.12) rotate(-4deg)}14%{transform:translateY(3%) scale(.97)}}
+@keyframes slideR{from{transform:translateX(-18px);opacity:0}to{transform:none;opacity:1}}
+.pillar h3 em{position:relative;display:inline-block;z-index:0}
+.pillar h3 em .ch{display:inline-block}
+@media (prefers-reduced-motion:no-preference){
+  .pillar h3 em{opacity:1!important;animation:none!important}
+  .pillar h3 em .ch{opacity:0}
+  .pillar.in h3 em .ch{animation:stamp .5s cubic-bezier(.2,.9,.3,1.25) calc(.5s + var(--k)*.16s) both,wave 3.8s ease-in-out calc(2.2s + var(--k)*.12s) infinite}
+  .pillar h3 em::before{content:"";position:absolute;left:50%;top:50%;width:120%;aspect-ratio:1;border:3px solid var(--c);border-radius:50%;opacity:0;pointer-events:none}
+  .pillar.in h3 em::before{animation:ring .7s ease-out 1.05s both}
+  .pillar h3 em::after{content:"";position:absolute;left:-4%;right:-4%;bottom:.04em;height:.28em;background:var(--c);opacity:.22;z-index:-1;transform:scaleX(0);transform-origin:left;border-radius:3px}
+  .pillar.in h3 em::after{animation:bar .5s cubic-bezier(.6,0,.2,1) 1.2s both}
+  .pillar h3 .tl{display:inline-block;opacity:0}
+  .pillar.in h3 .tl{animation:slideR .5s cubic-bezier(.2,.8,.2,1) 1.25s both}
+}
+.century h3,.century li,.pillar li,.pillar .sub{word-break:keep-all}.century h3 .nw{white-space:nowrap}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -423,7 +442,7 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
     <h2>단단하게, 당당하게, 든든하게</h2>
     <div class="pillars" id="pillars"></div>
     <div class="century">
-      <h3>끊어지지 않는 경북본부 <em>백년대계(百年大計)</em>를 세우겠습니다!</h3>
+      <h3>끊어지지 않는 경북본부 <span class="nw"><em>백년대계(百年大計)</em>를</span> 세우겠습니다!</h3>
       <ul>
         <li>대의원대회 주기에 맞춰 1년 단위로 끊어지고 소비되는 사업을 넘어, 단기-중기-장기 사업 계획을 체계적으로 수립하겠습니다.</li>
         <li>비전 2030 '롤링 플랜(Rolling Plan)' 도입: 중장기 사업계획을 수시로 점검하여, 차기 집행부에서도 연속성을 가질 수 있도록 체계화, 구조화</li>
@@ -588,7 +607,7 @@ lb.addEventListener("click",e=>{ if(e.target===lb) lb.close(); });
 // 약속
 $("pillars").innerHTML = PILLARS.map(p=>`
   <article class="pillar" id="p-${p.id}" style="--c:${p.c}">
-    <div class="hd"><div class="sub">${esc(p.sub)}</div><h3><em>${p.word}</em> 경북본부!</h3></div>
+    <div class="hd"><div class="sub">${esc(p.sub)}</div><h3><em>${[...p.word].map((c,k)=>`<span class="ch" style="--k:${k}">${c}</span>`).join("")}</em> <span class="tl">경북본부!</span></h3></div>
     ${p.groups.map(g=>`<div class="grp"><b>${esc(g.t)}</b><ul>${g.li.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("")}
   </article>`).join("");
 
