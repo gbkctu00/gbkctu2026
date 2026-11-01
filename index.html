@@ -502,6 +502,8 @@ dialog.lb .lbNav.prev{left:6px!important;right:auto!important}
 dialog.lb .lbNav.next{right:6px!important;left:auto!important}
 dialog.lb .lbNav[hidden],dialog.lb .lbCount[hidden]{display:none!important}
 dialog.lb.clean .lbNav,dialog.lb.clean .lbCount,dialog.lb.zoomed .lbNav{opacity:0!important;pointer-events:none!important}
+
+dialog.lb .lbGhost{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100dvh;object-fit:contain;pointer-events:none;opacity:0;z-index:1;margin:0;border-radius:0}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -1109,27 +1111,38 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
 
 // 확대 화면: 페이지 대신 사진만 확대
 (()=>{ const img=$("lbImg"), c1=$("lbClose"), c2=$("lbClose2"); if(!img) return;
-  let sc=1,x=0,y=0,pts=new Map(),st=null,lastTap=0,moved=false,swipe=false,sdx=0;
+  let sc=1,x=0,y=0,pts=new Map(),st=null,lastTap=0,moved=false,swipe=false,sdx=0,vel=0,lastMx=0,lastMt=0,busy=false,ghI=-1,ghDir=1;
   const snap=()=>({s:sc,x,y,p:[...pts.values()].map(v=>({...v}))});
   const apply=()=>{ img.style.transform=`translate(${x}px,${y}px) scale(${sc})`; const z=sc>1.05; c2.style.opacity=z?0:1; c2.style.pointerEvents=z?"none":""; lb.classList.toggle("zoomed",z); };
   const reset=()=>{ sc=1;x=0;y=0;apply(); };
   const cnt=$("lbCount"), pv=$("lbPrev"), nx=$("lbNext");
   const ui=()=>{ const L=window.__lbList||[], n=L.length, i=window.__lbIdx||0; const many=n>1; cnt.textContent=many?`${i+1} / ${n}`:""; cnt.hidden=!many; pv.hidden=!many||i<=0; nx.hidden=!many||i>=n-1; };
-  const nav=(step,dir)=>{ const L=window.__lbList||[]; const i=(window.__lbIdx||0)+step; if(i<0||i>=L.length){ x=0; apply(); return; }
-    window.__lbIdx=i; const z=L[i]; img.style.transition="transform .18s ease, opacity .18s"; x=dir*-window.innerWidth*0.35; img.style.opacity=0; apply();
-    setTimeout(()=>{ img.style.transition="none"; img.src=z.dataset.zoom; img.alt=z.dataset.cap||""; $("lbCap").textContent=z.dataset.cap||""; sc=1; x=dir*window.innerWidth*0.35; apply();
-      requestAnimationFrame(()=>{ img.style.transition="transform .2s ease, opacity .2s"; x=0; img.style.opacity=1; apply(); setTimeout(()=>{img.style.transition=""},220); }); ui(); },180); };
-  pv.onclick=()=>nav(-1,1); nx.onclick=()=>nav(1,-1);
-  document.addEventListener("keydown",e=>{ if(!lb.open) return; if(e.key==="ArrowRight") nav(1,-1); else if(e.key==="ArrowLeft") nav(-1,1); });
+  const W=()=>window.innerWidth;
+  const gh=document.createElement("img"); gh.className="lbGhost"; gh.alt=""; gh.draggable=false; lb.appendChild(gh);
+  const L=()=>window.__lbList||[]; const srcAt=i=>{ const z=L()[i]; return z?z.dataset.zoom:null; };
+  const preload=i=>{ const u=srcAt(i); if(u){ const im=new Image(); im.src=u; } };
+  const setGhost=i=>{ if(ghI!==i){ ghI=i; gh.src=srcAt(i)||""; } };
+  const tf=(el,px,t)=>{ el.style.transition=t?`transform ${t}ms cubic-bezier(.2,.75,.25,1)`:"none"; el.style.transform=el===img?`translate(${px}px,0px) scale(1)`:`translateX(${px}px)`; };
+  const drag=dx=>{ const dir=dx<0?1:-1, i=(window.__lbIdx||0)+dir; if(!srcAt(i)){ tf(img,dx*0.3); gh.style.opacity=0; return; } setGhost(i); ghDir=dir; gh.style.opacity=1; tf(img,dx); tf(gh,dx+dir*W()); };
+  const back=()=>{ tf(img,0,220); tf(gh,ghDir*W(),220); x=0; setTimeout(()=>{ if(!busy){ gh.style.opacity=0; img.style.transition=""; } },230); };
+  const go=(dir,fromDx)=>{ if(busy) return; const i=(window.__lbIdx||0)+dir; if(!srcAt(i)){ back(); return; } busy=true; setGhost(i); gh.style.opacity=1;
+    if(fromDx===undefined){ tf(img,0); tf(gh,dir*W()); gh.getBoundingClientRect(); }
+    const ms=fromDx===undefined?320:Math.round(Math.max(170,Math.min(320,(W()-Math.abs(fromDx))/Math.max(1.2,Math.abs(vel)))));
+    tf(img,-dir*W(),ms); tf(gh,0,ms);
+    setTimeout(()=>{ const z=L()[i]; window.__lbIdx=i; img.style.transition="none"; img.style.visibility="hidden"; img.src=z.dataset.zoom; img.alt=z.dataset.cap||""; $("lbCap").textContent=z.dataset.cap||""; sc=1;x=0;y=0;
+      const done=()=>{ apply(); img.style.visibility=""; requestAnimationFrame(()=>{ gh.style.opacity=0; ghI=-1; img.style.transition=""; busy=false; }); ui(); preload(i+1); preload(i-1); };
+      (img.decode?img.decode().catch(()=>{}):Promise.resolve()).then(done); },ms+10); };
+  pv.onclick=()=>go(-1); nx.onclick=()=>go(1);
+  document.addEventListener("keydown",e=>{ if(!lb.open) return; if(e.key==="ArrowRight") go(1); else if(e.key==="ArrowLeft") go(-1); });
   img.draggable=false;
-  img.addEventListener("pointerdown",e=>{ try{img.setPointerCapture(e.pointerId)}catch(_){} pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===1) moved=false; st=snap(); });
-  img.addEventListener("pointermove",e=>{ if(!pts.has(e.pointerId)||!st) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); const a=[...pts.values()], b=st.p;
+  img.addEventListener("pointerdown",e=>{ if(busy) return; lastMx=e.clientX; lastMt=performance.now(); vel=0; try{img.setPointerCapture(e.pointerId)}catch(_){} pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===1) moved=false; st=snap(); });
+  img.addEventListener("pointermove",e=>{ if(!pts.has(e.pointerId)||!st) return; if(pts.size===1){ const nw=performance.now(); vel=0.7*(e.clientX-lastMx)/Math.max(1,nw-lastMt)+0.3*vel; lastMx=e.clientX; lastMt=nw; } pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); const a=[...pts.values()], b=st.p;
     if(a.length>=2&&b.length>=2){ const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y), d0=Math.hypot(b[0].x-b[1].x,b[0].y-b[1].y)||1;
       sc=Math.min(5,Math.max(1,st.s*d/d0)); x=st.x+((a[0].x+a[1].x)-(b[0].x+b[1].x))/2; y=st.y+((a[0].y+a[1].y)-(b[0].y+b[1].y))/2; moved=true; }
     else if(a.length===1&&b.length>=1){ const dx=a[0].x-b[0].x, dy=a[0].y-b[0].y; if(Math.hypot(dx,dy)>8) moved=true; if(st.s>1.01){ x=st.x+dx; y=st.y+dy; } else if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8){ swipe=true; sdx=dx; } }
-    if(sc<=1.01){ x=swipe&&pts.size===1?sdx:0; y=0; } img.style.transition=swipe?"none":""; apply(); });
+    if(sc<=1.01){ x=swipe&&pts.size===1?sdx:0; y=0; } img.style.transition=swipe?"none":""; apply(); if(swipe&&pts.size===1) drag(sdx); });
   const up=e=>{ pts.delete(e.pointerId); st=snap(); };
-  let tapT=null; img.addEventListener("pointerup",e=>{ const mv=moved; up(e); if(swipe&&pts.size===0){ const d=sdx; swipe=false; sdx=0; img.style.transition=""; if(Math.abs(d)>60&&sc<=1.01){ nav(d<0?1:-1,d<0?-1:1); } else { x=0; apply(); } return; } if(pts.size===0&&!mv){ const t=Date.now(); if(t-lastTap<320){ clearTimeout(tapT); if(sc>1.01) reset(); else { sc=2.5; apply(); } lastTap=0; } else { lastTap=t; clearTimeout(tapT); tapT=setTimeout(()=>lb.classList.toggle("clean"),330); } } });
+  let tapT=null; img.addEventListener("pointerup",e=>{ const mv=moved; up(e); if(swipe&&pts.size===0){ const d=sdx, v=vel; swipe=false; sdx=0; const dir=d<0?1:-1; if((Math.abs(d)>window.innerWidth*0.2||(Math.abs(v)>0.3&&Math.abs(d)>20)) && srcAt((window.__lbIdx||0)+dir)) go(dir,d); else back(); return; } if(pts.size===0&&!mv){ const t=Date.now(); if(t-lastTap<320){ clearTimeout(tapT); if(sc>1.01) reset(); else { sc=2.5; apply(); } lastTap=0; } else { lastTap=t; clearTimeout(tapT); tapT=setTimeout(()=>lb.classList.toggle("clean"),330); } } });
   img.addEventListener("pointercancel",up);
   img.addEventListener("wheel",e=>{ e.preventDefault(); sc=Math.min(5,Math.max(1,sc*(e.deltaY<0?1.15:1/1.15))); if(sc<=1.01){x=0;y=0;} apply(); },{passive:false});
   // 확대 화면이 열려 있는 동안 페이지 자체 확대 잠금
@@ -1140,7 +1153,7 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
   const pin=()=>{ if(!vv||!lb.open) return; const k=1/vv.scale; if(Math.abs(vv.scale-1)<.01){ c1.style.cssText=""; return; }
     c1.style.cssText=`position:fixed!important;right:auto!important;left:${vv.offsetLeft+vv.width-(42+14)*k}px!important;top:${vv.offsetTop+12*k}px!important;transform:scale(${k});transform-origin:top left`; };
   if(vv){ vv.addEventListener("resize",pin); vv.addEventListener("scroll",pin); }
-  new MutationObserver(()=>{ lb.classList.remove("clean"); if(lb.open){ reset(); lock(true); pin(); ui(); img.style.opacity=1; } else { reset(); lock(false); c1.style.cssText=""; } }).observe(lb,{attributes:true,attributeFilter:["open"]});
+  new MutationObserver(()=>{ lb.classList.remove("clean"); if(lb.open){ reset(); lock(true); pin(); ui(); img.style.opacity=1; busy=false; gh.style.opacity=0; ghI=-1; preload((window.__lbIdx||0)+1); preload((window.__lbIdx||0)-1); } else { reset(); lock(false); c1.style.cssText=""; } }).observe(lb,{attributes:true,attributeFilter:["open"]});
 })();
 </script>
 
