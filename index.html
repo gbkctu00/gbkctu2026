@@ -476,6 +476,14 @@ dialog.lb #lbClose{width:42px!important;height:42px!important;font-size:21px!imp
 dialog.lb img{touch-action:none;transform-origin:center center;transition:transform .05s linear;user-select:none;-webkit-user-drag:none}
 dialog.lb[open]{overflow:hidden}
 dialog.lb .lbHint{color:rgba(255,255,255,.7);font-size:12.5px;margin:0}
+
+/* 확대 화면 전체 사용 */
+dialog.lb[open]{position:fixed;inset:0;width:100vw!important;height:100vh;height:100dvh;max-width:none!important;max-height:none!important;margin:0;padding:0;justify-content:center}
+dialog.lb img{max-width:100vw!important;max-height:100vh!important;max-height:100dvh!important;width:100vw;height:auto;object-fit:contain;border-radius:0!important}
+dialog.lb #lbCap,dialog.lb .lbHint{position:fixed;left:0;right:0;text-align:center;pointer-events:none;text-shadow:0 1px 3px rgba(0,0,0,.8);transition:opacity .2s}
+dialog.lb #lbCap{bottom:calc(104px + env(safe-area-inset-bottom,0px));padding:0 16px}
+dialog.lb .lbHint{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+dialog.lb.zoomed #lbCap,dialog.lb.zoomed .lbHint{opacity:0}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -498,7 +506,7 @@ dialog.lb .lbHint{color:rgba(255,255,255,.7);font-size:12.5px;margin:0}
   .vision a:nth-child(1){animation-delay:2.65s!important}.vision a:nth-child(2){animation-delay:2.8s!important}.vision a:nth-child(3){animation-delay:2.95s!important}
 }
 dialog.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1200px);max-height:92vh}
-dialog.lb::backdrop{background:rgba(8,10,22,.88)}
+dialog.lb::backdrop{background:rgba(8,10,22,.95)}
 dialog.lb img{max-width:min(96vw,1200px);max-height:86vh;object-fit:contain;margin:auto;border-radius:4px}
 dialog.lb p{color:#fff;text-align:center;font-size:14px;padding:8px}
 dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:16px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:22px;cursor:pointer}
@@ -1085,7 +1093,7 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
 (()=>{ const img=$("lbImg"), c1=$("lbClose"), c2=$("lbClose2"); if(!img) return;
   let sc=1,x=0,y=0,pts=new Map(),st=null,lastTap=0,moved=false;
   const snap=()=>({s:sc,x,y,p:[...pts.values()].map(v=>({...v}))});
-  const apply=()=>{ img.style.transform=`translate(${x}px,${y}px) scale(${sc})`; const z=sc>1.05; c2.style.opacity=z?0:1; c2.style.pointerEvents=z?"none":""; };
+  const apply=()=>{ img.style.transform=`translate(${x}px,${y}px) scale(${sc})`; const z=sc>1.05; c2.style.opacity=z?0:1; c2.style.pointerEvents=z?"none":""; lb.classList.toggle("zoomed",z); };
   const reset=()=>{ sc=1;x=0;y=0;apply(); };
   img.draggable=false;
   img.addEventListener("pointerdown",e=>{ try{img.setPointerCapture(e.pointerId)}catch(_){} pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pts.size===1) moved=false; st=snap(); });
