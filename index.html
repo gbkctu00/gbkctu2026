@@ -464,6 +464,12 @@ dialog.leave button.stay{background:#C8102E;border-color:#C8102E;color:#fff}
   .tabs{display:none!important}
   body{padding-bottom:0!important}
 }
+
+/* 확대 사진 닫기 버튼 강화 */
+dialog.lb[open]{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;max-height:100vh}
+dialog.lb img{max-height:calc(100vh - 170px)!important;cursor:zoom-out}
+dialog.lb #lbClose{width:48px!important;height:48px!important;background:#C8102E!important;font-size:24px!important;box-shadow:0 4px 14px rgba(0,0,0,.4);z-index:2}
+dialog.lb .lbBottom{position:fixed!important;top:auto!important;right:auto!important;left:50%!important;transform:translateX(-50%);bottom:calc(22px + env(safe-area-inset-bottom,0px));width:auto!important;height:auto!important;border-radius:999px!important;padding:13px 26px!important;background:#fff!important;color:#1F2552!important;font-family:var(--goth);font-weight:900;font-size:16px!important;box-shadow:0 6px 20px rgba(0,0,0,.45);z-index:2}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -672,7 +678,7 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
   <a href="#home" class="on">홈</a><a href="#news">소식</a><a href="#pledge">약속</a><a href="#cand">후보</a><a href="#voice">의견</a>
 </div></nav>
 <div class="toast" id="toast" role="status"></div>
-<dialog class="lb" id="lb"><button type="button" id="lbClose" aria-label="닫기">✕</button><img id="lbImg" alt=""><p id="lbCap"></p></dialog>
+<dialog class="lb" id="lb"><button type="button" id="lbClose" aria-label="닫기">✕</button><img id="lbImg" alt=""><p id="lbCap"></p><button type="button" class="lbBottom" id="lbClose2">✕ 사진 닫기</button></dialog>
 
 <script>
 /* ===== 여기만 고치면 됩니다 ===== */
@@ -743,7 +749,7 @@ const lb=$("lb");
 function zoom(src,cap){ $("lbImg").src=src; $("lbImg").alt=cap||""; $("lbCap").textContent=cap||""; lb.showModal(); try{ history.pushState({lb:1},""); }catch(e){} }
 lb.addEventListener("close",()=>{ if(history.state&&history.state.lb){ window.__lbBack=true; try{ history.back(); }catch(e){} } });
 window.addEventListener("popstate",()=>{ if(lb.open) lb.close(); });
-$("lbClose").onclick=()=>lb.close();
+$("lbClose").onclick=()=>lb.close(); $("lbClose2").onclick=()=>lb.close(); $("lbImg").onclick=()=>lb.close();
 lb.addEventListener("click",e=>{ if(e.target===lb) lb.close(); });
 
 // 약속
@@ -1039,7 +1045,8 @@ $("voiceForm").addEventListener("submit",async e=>{
 
 // 인앱 브라우저 안내
 (()=>{ const ua=navigator.userAgent||""; const kakao=/KAKAOTALK/i.test(ua); const android=/Android/i.test(ua);
-  const inapp=kakao||/NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp|Band\//i.test(ua);
+  const ctab=/^android-app:\/\//.test(document.referrer||""); const inapp=kakao||ctab||/NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp|Band\//i.test(ua);
+  if(ctab&&!kakao){ const pp=document.querySelector("#inapp p"); if(pp) pp.innerHTML="앱 안의 창은 ✕를 누르면 닫혀요. 오른쪽 위 <b>⋮</b> 메뉴에서 <b>‘Chrome(삼성 인터넷)에서 열기’</b>를 눌러 주세요."; }
   let seen=false; try{ seen=sessionStorage.getItem("inappX")==="1"; }catch(e){}
   if(!inapp||seen) return; const box=$("inapp"); box.hidden=false;
   $("inappX").onclick=()=>{ box.hidden=true; try{ sessionStorage.setItem("inappX","1"); }catch(e){} };
