@@ -489,7 +489,11 @@ dialog.lb.zoomed #lbCap,dialog.lb.zoomed .lbHint{opacity:0}
 dialog.lb .lbHint{display:none!important}
 dialog.lb #lbCap{bottom:calc(96px + env(safe-area-inset-bottom,0px))!important;padding:0 16px!important;margin:0;line-height:1.35;font-size:15px}
 dialog.lb #lbCap{font-weight:700;font-size:16px!important;color:#fff}
-dialog.lb #lbCap::after{content:"※ 두 손가락으로 벌리거나 두 번 톡 누르면 확대돼요";display:table;margin:7px auto 0;font-size:12px;font-weight:500;color:#FFE38A;background:rgba(255,255,255,.1);border-radius:999px;padding:3px 11px}
+dialog.lb #lbCap::after{content:"※ 한 번 톡: 글자 숨기기 · 두 번 톡/두 손가락: 확대";display:table;margin:7px auto 0;font-size:12px;font-weight:500;color:#FFE38A;background:rgba(255,255,255,.1);border-radius:999px;padding:3px 11px}
+
+/* 한 번 톡: 글자·버튼 숨기기 */
+dialog.lb.clean #lbCap,dialog.lb.clean .lbBottom{opacity:0!important;pointer-events:none!important}
+dialog.lb .lbBottom{transition:opacity .2s}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -1109,7 +1113,7 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
     else if(a.length===1&&b.length>=1){ const dx=a[0].x-b[0].x, dy=a[0].y-b[0].y; if(Math.hypot(dx,dy)>8) moved=true; if(st.s>1.01){ x=st.x+dx; y=st.y+dy; } }
     if(sc<=1.01){ x=0; y=0; } apply(); });
   const up=e=>{ pts.delete(e.pointerId); st=snap(); };
-  img.addEventListener("pointerup",e=>{ const mv=moved; up(e); if(pts.size===0&&!mv){ const t=Date.now(); if(t-lastTap<320){ if(sc>1.01) reset(); else { sc=2.5; apply(); } lastTap=0; } else lastTap=t; } });
+  let tapT=null; img.addEventListener("pointerup",e=>{ const mv=moved; up(e); if(pts.size===0&&!mv){ const t=Date.now(); if(t-lastTap<320){ clearTimeout(tapT); if(sc>1.01) reset(); else { sc=2.5; apply(); } lastTap=0; } else { lastTap=t; clearTimeout(tapT); tapT=setTimeout(()=>lb.classList.toggle("clean"),330); } } });
   img.addEventListener("pointercancel",up);
   img.addEventListener("wheel",e=>{ e.preventDefault(); sc=Math.min(5,Math.max(1,sc*(e.deltaY<0?1.15:1/1.15))); if(sc<=1.01){x=0;y=0;} apply(); },{passive:false});
   // 확대 화면이 열려 있는 동안 페이지 자체 확대 잠금
@@ -1120,7 +1124,7 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
   const pin=()=>{ if(!vv||!lb.open) return; const k=1/vv.scale; if(Math.abs(vv.scale-1)<.01){ c1.style.cssText=""; return; }
     c1.style.cssText=`position:fixed!important;right:auto!important;left:${vv.offsetLeft+vv.width-(42+14)*k}px!important;top:${vv.offsetTop+12*k}px!important;transform:scale(${k});transform-origin:top left`; };
   if(vv){ vv.addEventListener("resize",pin); vv.addEventListener("scroll",pin); }
-  new MutationObserver(()=>{ if(lb.open){ reset(); lock(true); pin(); } else { reset(); lock(false); c1.style.cssText=""; } }).observe(lb,{attributes:true,attributeFilter:["open"]});
+  new MutationObserver(()=>{ lb.classList.remove("clean"); if(lb.open){ reset(); lock(true); pin(); } else { reset(); lock(false); c1.style.cssText=""; } }).observe(lb,{attributes:true,attributeFilter:["open"]});
 })();
 </script>
 
