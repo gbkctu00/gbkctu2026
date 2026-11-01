@@ -1126,12 +1126,13 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
   const L=()=>window.__lbList||[]; const srcAt=i=>{ const z=L()[i]; return z?z.dataset.zoom:null; };
   const preload=i=>{ const u=srcAt(i); if(u){ const im=new Image(); im.src=u; } };
   const setGhost=i=>{ if(ghI!==i){ ghI=i; gh.src=srcAt(i)||""; } };
-  const tf=(el,px,t)=>{ el.style.transition=t?`transform ${t}ms cubic-bezier(.2,.75,.25,1)`:"none"; el.style.transform=el===img?`translate(${px}px,0px) scale(1)`:`translateX(${px}px)`; };
-  const drag=dx=>{ const dir=dx<0?1:-1, i=(window.__lbIdx||0)+dir; if(!srcAt(i)){ tf(img,dx*0.3); gh.style.opacity=0; return; } setGhost(i); ghDir=dir; gh.style.opacity=1; tf(img,dx); tf(gh,dx+dir*W()); };
-  const back=()=>{ tf(img,0,220); tf(gh,ghDir*W(),220); x=0; setTimeout(()=>{ if(!busy){ gh.style.opacity=0; img.style.transition=""; } },230); };
-  const go=(dir,fromDx)=>{ if(busy) return; const i=(window.__lbIdx||0)+dir; if(!srcAt(i)){ back(); return; } busy=true; setGhost(i); gh.style.opacity=1;
+  const tf=(el,px,t)=>{ el.style.transition=t?`transform ${t}ms cubic-bezier(.22,.9,.32,1)`:"none"; el.style.transform=`translate3d(${px}px,0,0)`; };
+  let rq=0,pdx=0; const drag=dx=>{ pdx=dx; if(!rq) rq=requestAnimationFrame(()=>{ rq=0; dragNow(pdx); }); };
+  const dragNow=dx=>{ if(!swipe) return; const dir=dx<0?1:-1, i=(window.__lbIdx||0)+dir; if(!srcAt(i)){ tf(img,dx/(1+Math.abs(dx)/120)); gh.style.opacity=0; return; } setGhost(i); ghDir=dir; gh.style.opacity=1; tf(img,dx); tf(gh,dx+dir*W()); };
+  const back=()=>{ if(rq){ cancelAnimationFrame(rq); rq=0; } tf(img,0,260); tf(gh,ghDir*W(),260); x=0; setTimeout(()=>{ if(!busy){ gh.style.opacity=0; img.style.transition=""; } },230); };
+  const go=(dir,fromDx)=>{ if(busy) return; if(rq){ cancelAnimationFrame(rq); rq=0; } const i=(window.__lbIdx||0)+dir; if(!srcAt(i)){ back(); return; } busy=true; setGhost(i); gh.style.opacity=1;
     if(fromDx===undefined){ tf(img,0); tf(gh,dir*W()); gh.getBoundingClientRect(); }
-    const ms=fromDx===undefined?320:Math.round(Math.max(170,Math.min(320,(W()-Math.abs(fromDx))/Math.max(1.2,Math.abs(vel)))));
+    const ms=fromDx===undefined?340:Math.round(Math.max(200,Math.min(360,1.6*(W()-Math.abs(fromDx))/Math.max(1,Math.abs(vel)))));
     tf(img,-dir*W(),ms); tf(gh,0,ms);
     setTimeout(()=>{ const z=L()[i]; window.__lbIdx=i; img.style.transition="none"; img.src=z.dataset.zoom; img.alt=z.dataset.cap||""; $("lbCap").textContent=z.dataset.cap||""; sc=1;x=0;y=0;
       const done=()=>{ apply(); img.style.visibility=""; requestAnimationFrame(()=>requestAnimationFrame(()=>{ gh.style.opacity=0; img.style.transition=""; busy=false; setGhost(i+1); })); ui(); preload(i+1); preload(i-1); };
@@ -1144,7 +1145,7 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
     if(a.length>=2&&b.length>=2){ const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y), d0=Math.hypot(b[0].x-b[1].x,b[0].y-b[1].y)||1;
       sc=Math.min(5,Math.max(1,st.s*d/d0)); x=st.x+((a[0].x+a[1].x)-(b[0].x+b[1].x))/2; y=st.y+((a[0].y+a[1].y)-(b[0].y+b[1].y))/2; moved=true; }
     else if(a.length===1&&b.length>=1){ const dx=a[0].x-b[0].x, dy=a[0].y-b[0].y; if(Math.hypot(dx,dy)>8) moved=true; if(st.s>1.01){ x=st.x+dx; y=st.y+dy; } else if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>8){ swipe=true; sdx=dx; } }
-    if(sc<=1.01){ x=swipe&&pts.size===1?sdx:0; y=0; } img.style.transition=swipe?"none":""; apply(); if(swipe&&pts.size===1) drag(sdx); });
+    if(sc<=1.01){ x=swipe&&pts.size===1?sdx:0; y=0; } if(swipe&&pts.size===1){ drag(sdx); } else { img.style.transition=""; apply(); } });
   const up=e=>{ pts.delete(e.pointerId); st=snap(); };
   let tapT=null; img.addEventListener("pointerup",e=>{ const mv=moved; up(e); if(swipe&&pts.size===0){ const d=sdx, v=vel; swipe=false; sdx=0; const dir=d<0?1:-1; if((Math.abs(d)>window.innerWidth*0.2||(Math.abs(v)>0.3&&Math.abs(d)>20)) && srcAt((window.__lbIdx||0)+dir)) go(dir,d); else back(); return; } if(pts.size===0&&!mv){ const t=Date.now(); if(t-lastTap<320){ clearTimeout(tapT); if(sc>1.01) reset(); else { sc=2.5; apply(); } lastTap=0; } else { lastTap=t; clearTimeout(tapT); tapT=setTimeout(()=>lb.classList.toggle("clean"),330); } } });
   img.addEventListener("pointercancel",up);
