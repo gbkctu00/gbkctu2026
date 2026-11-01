@@ -965,7 +965,7 @@ $("voiceForm").addEventListener("submit",async e=>{
   try{ user = await claude.use("user"); if(user){ try{me=await user.id()}catch(_){} } }catch(_){}
   const editor = !!(user && user.canEdit && user.canEdit());
   try{ artifactNs = await claude.use("artifact"); }catch(_){ artifactNs=null; }
-  if(editor && artifactNs){ canWrite=true; openEditor(null); renderFeed(); }
+  // 소식 올리기 폼은 사용하지 않음 (news.json으로 관리)
   try{ db = await claude.use("db"); }catch(_){ db=null }
   if(db && editor){
     $("inboxWrap").hidden=false;
