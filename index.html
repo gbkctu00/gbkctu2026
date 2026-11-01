@@ -783,7 +783,7 @@ function renderFeed(){
   const feed=$("feed");
   if(!list.length){ feed.innerHTML = `<div class="empty">곧 첫 선거운동 소식이 올라옵니다.<br>현장순회, 사업장 방문, 간담회 소식을 이곳에서 전합니다.</div>`; $("feedMore").hidden=true; return; }
   feed.innerHTML = list.slice(0,shown).map(p=>{
-    const n=dayNo(p.date), ph=(p.photos||[]).slice(0,7);
+    const n=dayNo(p.date), ph=(p.photos||[]).slice(0,16);
     const long=(p.body||"").length>320;
     return `<article class="post" id="n-${esc(p.id)}">
       <div class="bar"><img class="bi" src="img/fist_w.png" alt="">${n>=1?`<span class="day">${n}일차</span>`:""}<h3>${esc(p.title)}</h3><span class="meta">${fmtDate(p.date)}${p.place?" · "+esc(p.place):""}</span></div>
