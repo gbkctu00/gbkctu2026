@@ -438,6 +438,21 @@ footer b{color:var(--ink)}
   .post .txt .sh::before{display:inline-block;transition:transform .5s cubic-bezier(.2,.9,.3,1.4) .2s;transform:scale(0) rotate(-90deg)}
   .post .txt .sh.in::before{transform:none}
 }
+
+/* 인앱 브라우저 안내 · 닫기 확인 */
+.inapp{position:fixed;left:12px;right:12px;bottom:calc(70px + env(safe-area-inset-bottom,0px));z-index:12;background:#1F2552;color:#fff;border-radius:12px;padding:10px 10px 10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:13.5px;line-height:1.4}
+.inapp[hidden]{display:none}
+.inapp p{flex:1;margin:0}
+.inapp .go{background:#FFE300;color:#1F2552;border:0;border-radius:8px;padding:8px 12px;font-weight:900;font-size:13.5px;white-space:nowrap;cursor:pointer}
+.inapp .x{background:none;border:0;color:#fff;opacity:.7;font-size:20px;padding:0 4px;cursor:pointer}
+dialog.leave{border:0;border-radius:14px;padding:22px 20px 16px;max-width:320px;width:calc(100% - 48px);text-align:center;box-shadow:0 12px 40px rgba(0,0,0,.3)}
+dialog.leave::backdrop{background:rgba(8,10,22,.55)}
+dialog.leave h4{font-family:var(--goth);font-weight:900;font-size:19px;margin:0 0 6px;color:var(--ink)}
+dialog.leave p{margin:0 0 16px;color:var(--muted);font-size:14px}
+dialog.leave .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+dialog.leave button{border-radius:10px;padding:12px;font-weight:900;font-size:15px;cursor:pointer;border:1.5px solid #CFCFD4;background:#fff;color:var(--ink)}
+dialog.leave button.stay{background:#C8102E;border-color:#C8102E;color:#fff}
+@media (prefers-color-scheme:dark){dialog.leave{background:#fff;color:#111}}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -639,6 +654,8 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
   </footer>
 </main>
 
+<div class="inapp" id="inapp" hidden role="region" aria-label="브라우저 안내"><p>앱 안의 창은 ✕를 누르면 닫혀요. 크롬·인터넷 앱으로 보면 더 편해요.</p><button class="go" type="button" id="inappGo">브라우저로 열기</button><button class="x" type="button" id="inappX" aria-label="안내 닫기">×</button></div>
+<dialog class="leave" id="leave"><h4>홈페이지를 닫을까요?</h4><p>송무근·최해술·신동연 후보조 소식, 다음에 또 들러 주세요.</p><div class="row"><button type="button" id="leaveGo">닫기</button><button type="button" class="stay" id="leaveStay" autofocus>계속 보기</button></div></dialog>
 <nav class="tabs" aria-label="바로가기"><div class="wrap">
   <a href="#home" class="on">홈</a><a href="#news">소식</a><a href="#pledge">약속</a><a href="#cand">후보</a><a href="#voice">의견</a>
 </div></nav>
@@ -712,7 +729,7 @@ const fmtDate = d => { const t=new Date(d+"T00:00:00Z"); return `${t.getUTCMonth
 // 확대 보기
 const lb=$("lb");
 function zoom(src,cap){ $("lbImg").src=src; $("lbImg").alt=cap||""; $("lbCap").textContent=cap||""; lb.showModal(); try{ history.pushState({lb:1},""); }catch(e){} }
-lb.addEventListener("close",()=>{ if(history.state&&history.state.lb){ try{ history.back(); }catch(e){} } });
+lb.addEventListener("close",()=>{ if(history.state&&history.state.lb){ window.__lbBack=true; try{ history.back(); }catch(e){} } });
 window.addEventListener("popstate",()=>{ if(lb.open) lb.close(); });
 $("lbClose").onclick=()=>lb.close();
 lb.addEventListener("click",e=>{ if(e.target===lb) lb.close(); });
@@ -1003,6 +1020,28 @@ $("voiceForm").addEventListener("submit",async e=>{
     p.querySelectorAll(".txt .sh").forEach(s=>ioS?ioS.observe(s):s.classList.add("in")); };
   const run=()=>document.querySelectorAll(".post").forEach(prep); run();
   const fd=document.getElementById("feed"); if(fd) new MutationObserver(run).observe(fd,{childList:true,subtree:true});
+})();
+
+// 인앱 브라우저 안내
+(()=>{ const ua=navigator.userAgent||""; const kakao=/KAKAOTALK/i.test(ua); const android=/Android/i.test(ua);
+  const inapp=kakao||/NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|DaumApps|everytimeApp|Band\//i.test(ua);
+  let seen=false; try{ seen=sessionStorage.getItem("inappX")==="1"; }catch(e){}
+  if(!inapp||seen) return; const box=$("inapp"); box.hidden=false;
+  $("inappX").onclick=()=>{ box.hidden=true; try{ sessionStorage.setItem("inappX","1"); }catch(e){} };
+  $("inappGo").onclick=()=>{ const u=location.href;
+    if(kakao){ location.href="kakaotalk://web/openExternal?url="+encodeURIComponent(u); return; }
+    if(android){ location.href="intent://"+u.replace(/^https?:\/\//,"")+"#Intent;scheme=https;end"; return; }
+    alert("오른쪽 위 메뉴에서 'Safari로 열기'를 눌러 주세요."); };
+})();
+// 뒤로가기로 나갈 때 확인
+(()=>{ const dlg=$("leave"); if(!dlg||!history.pushState) return; let leaving=false;
+  try{ history.replaceState(Object.assign({},history.state,{root:1}),""); history.pushState({guard:1},""); }catch(e){ return; }
+  window.addEventListener("popstate",e=>{ if(leaving) return; const st=e.state||{};
+    if(st.root && !(typeof lb!=="undefined" && lb.open) && !window.__lbBack){ dlg.showModal(); }
+    window.__lbBack=false; });
+  $("leaveStay").onclick=()=>{ dlg.close(); try{ history.pushState({guard:1},""); }catch(e){} };
+  $("leaveGo").onclick=()=>{ leaving=true; dlg.close(); if(/KAKAOTALK/i.test(navigator.userAgent)){ location.href="kakaotalk://inappbrowser/close"; return; } history.back(); setTimeout(()=>{ try{ window.close(); }catch(e){} },300); };
+  dlg.addEventListener("cancel",e=>{ e.preventDefault(); $("leaveStay").click(); });
 })();
 </script>
 
