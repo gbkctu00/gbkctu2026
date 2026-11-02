@@ -778,6 +778,7 @@ const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">
 const toast = m => { const t=$("toast"); t.textContent=m; t.classList.add("show"); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove("show"),2200); };
 async function copy(text, done){ try{ await navigator.clipboard.writeText(text); toast(done); }catch(e){ const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta); ta.select(); try{document.execCommand("copy"); toast(done);}catch(_){toast("길게 눌러 복사해 주세요");} ta.remove(); } }
 const pageUrl = () => SITE_URL || location.href.split("#")[0];
+const KO_URL = "https://2026경북본부선거.qaa.kr";   // 한글 주소(홈페이지로 이동)
 const kst = () => new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
 const dayNo = d => Math.floor((Date.parse(d)-Date.parse(CAMPAIGN_START))/864e5)+1;
 const fmtDate = d => { const t=new Date(d+"T00:00:00Z"); return `${t.getUTCMonth()+1}.${t.getUTCDate()}(${"일월화수목금토"[t.getUTCDay()]})`; };
@@ -824,10 +825,10 @@ $("gallery").innerHTML = GALLERY.map(g=>`<button type="button" class="${g.w?"w":
 document.addEventListener("click",e=>{ const z=e.target.closest("[data-zoom]"); if(z){ const g=z.parentElement?[...z.parentElement.children].filter(n=>n.matches&&n.matches("[data-zoom]")):[z]; window.__lbList=g; window.__lbIdx=Math.max(0,g.indexOf(z)); zoom(z.dataset.zoom,z.dataset.cap); } });
 
 // 퍼뜨리기
-const msgText = `민주노총 경북지역본부 16기 임원선거\n${slate} 후보조\n\n오늘을 치열하게! 내일은 치밀하게!\n\n· 투쟁 승리가 곧 조직화의 첩경, 단단한 경북본부\n· 정의로운 산업전환을 준비하는 당당한 경북본부\n· 산별과 지역을 잇는 든든한 경북본부\n\n투표: 11.19(목)~11.25(수)\n${pageUrl()}`;
+const msgText = `민주노총 경북지역본부 16기 임원선거\n${slate} 후보조\n\n오늘을 치열하게! 내일은 치밀하게!\n\n· 투쟁 승리가 곧 조직화의 첩경, 단단한 경북본부\n· 정의로운 산업전환을 준비하는 당당한 경북본부\n· 산별과 지역을 잇는 든든한 경북본부\n\n투표: 11.19(목)~11.25(수)\n홈페이지: ${KO_URL}`;
 $("msg").innerHTML = esc(msgText).replace(/(단단한|당당한|든든한) 경북본부/g,'<b class="hl hl-$1">$1 경북본부</b>');
 $("copyMsg").onclick=()=>copy(msgText,"문안을 복사했어요");
-$("copyUrl").onclick=()=>copy(pageUrl(),"주소를 복사했어요");
+$("copyUrl").onclick=()=>copy(KO_URL,"주소를 복사했어요");
 
 // 일정·계좌
 const today = kst();
