@@ -814,7 +814,7 @@ const fmtDate = d => { const t=new Date(d+"T00:00:00Z"); return `${t.getUTCMonth
 
 // 확대 보기
 const lb=$("lb");
-function zoom(src,cap){ $("lbImg").src=src; $("lbImg").alt=cap||""; $("lbCap").textContent=cap||""; lb.showModal(); try{ history.pushState({lb:1},""); }catch(e){} }
+function zoom(src,cap){ const I=$("lbImg"); if(I.getAttribute("src")!==src){ I.style.visibility="hidden"; I.onload=I.onerror=()=>{ I.style.visibility=""; I.onload=I.onerror=null; }; I.removeAttribute("src"); I.src=src; if(I.complete&&I.naturalWidth) I.style.visibility=""; } $("lbImg").alt=cap||""; $("lbCap").textContent=cap||""; lb.showModal(); try{ history.pushState({lb:1},""); }catch(e){} }
 lb.addEventListener("close",()=>{ if(history.state&&history.state.lb){ window.__lbBack=true; try{ history.back(); }catch(e){} } });
 window.addEventListener("popstate",()=>{ if(lb.open) lb.close(); });
 $("lbClose").onclick=()=>lb.close(); $("lbClose2").onclick=()=>lb.close();
@@ -1191,7 +1191,7 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
   const pin=()=>{ if(!vv||!lb.open) return; const k=1/vv.scale; if(Math.abs(vv.scale-1)<.01){ c1.style.cssText=""; return; }
     c1.style.cssText=`position:fixed!important;right:auto!important;left:${vv.offsetLeft+vv.width-(42+14)*k}px!important;top:${vv.offsetTop+12*k}px!important;transform:scale(${k});transform-origin:top left`; };
   if(vv){ vv.addEventListener("resize",pin); vv.addEventListener("scroll",pin); }
-  new MutationObserver(()=>{ lb.classList.remove("clean"); if(lb.open){ reset(); lock(true); pin(); ui(); img.style.opacity=1; busy=false; gh.style.opacity=0; ghI=-1; setGhost((window.__lbIdx||0)+1); preload((window.__lbIdx||0)+1); preload((window.__lbIdx||0)-1); } else { reset(); lock(false); c1.style.cssText=""; } }).observe(lb,{attributes:true,attributeFilter:["open"]});
+  new MutationObserver(()=>{ lb.classList.remove("clean"); if(lb.open){ reset(); lock(true); pin(); ui(); img.style.opacity=1; busy=false; gh.style.opacity=0; ghI=-1; setGhost((window.__lbIdx||0)+1); preload((window.__lbIdx||0)+1); preload((window.__lbIdx||0)-1); } else { reset(); lock(false); c1.style.cssText=""; gh.removeAttribute("src"); ghI=-1; gh.style.opacity=0; } }).observe(lb,{attributes:true,attributeFilter:["open"]});
 })();
 </script>
 
