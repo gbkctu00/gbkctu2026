@@ -519,6 +519,17 @@ dialog.lb .lbGhost{will-change:transform;backface-visibility:hidden}
 .papers .pp b small{font-weight:500;color:var(--muted);font-size:12.5px;margin-left:4px}
 .papers .pp a{display:block;text-align:center;background:#1F2552;color:#fff;text-decoration:none;border-radius:6px;padding:7px 0;font-weight:700;font-size:13.5px}
 .post .foot a.dl{background:#1F2552;color:#fff!important;border-color:#1F2552!important}
+
+/* 공식 홍보물: 이미지 그대로 보이기 */
+#print .gallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
+#print .gallery .gf{margin:0;background:var(--surface);border-radius:8px;overflow:hidden;display:grid}
+#print .gallery .gf.w{grid-column:1/-1}
+#print .gallery .gf button{border:0;padding:0;background:#fff;cursor:zoom-in;display:block}
+#print .gallery .gf img{width:100%;height:auto!important;aspect-ratio:auto!important;object-fit:contain!important;display:block}
+#print .gallery figcaption{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;font-size:13.5px;font-weight:700}
+#print .gallery figcaption a{flex:none;background:#1F2552;color:#fff;text-decoration:none;border-radius:6px;padding:5px 10px;font-size:12.5px}
+@media (min-width:900px){#print .gallery .gf.w{grid-column:span 3}#print .gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){#print .gallery figcaption{flex-direction:column;align-items:stretch;text-align:center}}
 /* 포스터처럼 분리된 첫 화면 */
 .board .wide{display:none!important}
 .board .stage{position:relative;max-width:620px;margin:0 auto;padding:22px 14px 0}
@@ -661,7 +672,7 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
     <div class="eyebrow">공식 홍보물</div>
     <h2>포스터·정책자료집</h2>
     <div class="gallery" id="gallery"></div>
-    <p class="note">누르면 크게 볼 수 있습니다. 휴대폰에서는 길게 눌러 저장하세요.</p>
+    <p class="note">누르면 크게 볼 수 있고, [⬇ 저장]으로 원본을 내려받을 수 있습니다.</p>
   </section>
 
   <section id="spread">
@@ -839,7 +850,7 @@ $("speechBody").innerHTML = SPEECH.map(p=>`<p>${esc(p)}</p>`).join("") + `<p cla
 $("speechMore").onclick=()=>{ const b=$("speechBody"); const open=b.classList.toggle("clip"); $("speechMore").textContent = open ? "전문 읽기 ＋" : "접기 －"; };
 
 // 홍보물
-$("gallery").innerHTML = GALLERY.map(g=>`<button type="button" class="${g.w?"w":""}" data-zoom="${g.src}" data-cap="${esc(g.t)}"><img src="${g.src}" alt="${esc(g.t)}" loading="lazy"><span>${esc(g.t)}</span></button>`).join("");
+$("gallery").innerHTML = GALLERY.map(g=>`<figure class="gf ${g.w?"w":""}"><button type="button" data-zoom="${g.src}" data-cap="${esc(g.t)}"><img src="${g.src}" alt="${esc(g.t)}" loading="lazy"></button><figcaption><span>${esc(g.t)}</span><a href="${g.src}" download="${esc(g.t)}.webp">⬇ 저장</a></figcaption></figure>`).join("");
 document.addEventListener("click",e=>{ const z=e.target.closest("[data-zoom]"); if(z){ const g=z.parentElement?[...z.parentElement.children].filter(n=>n.matches&&n.matches("[data-zoom]")):[z]; window.__lbList=g; window.__lbIdx=Math.max(0,g.indexOf(z)); zoom(z.dataset.zoom,z.dataset.cap); } });
 
 // 퍼뜨리기
