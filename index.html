@@ -80,6 +80,7 @@ section{padding-block:52px;display:grid;gap:22px}
 .board .slogan{width:min(100%,520px);margin:0 auto}
 .board .group{width:100%;max-width:560px;margin:4px auto 0}
 .board .names{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:10px 10px 12px;background:linear-gradient(transparent,rgba(24,27,51,.88) 45%)}
+.first .board{cursor:pointer}
 .board .names a{color:#fff;text-decoration:none;text-align:center;display:grid;line-height:1.2}
 .board .names small{font-size:11px;font-weight:700;opacity:.9}
 .board .names b{font-family:var(--goth);font-weight:900;font-size:clamp(20px,6vw,28px)}
@@ -1197,5 +1198,6 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
 })();
 </script>
 
+<script>document.addEventListener("click",e=>{ const b=e.target.closest(".first .board"); if(!b||e.target.closest("a,button")) return; const a=document.querySelector('.pcnav a[href="#cand"]'); if(!a) return; e.preventDefault(); a.click(); });</script>
 </body>
 </html>
