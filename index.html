@@ -851,7 +851,7 @@ $("speechMore").onclick=()=>{ const b=$("speechBody"); const open=b.classList.to
 
 // 홍보물
 $("gallery").innerHTML = GALLERY.map(g=>`<figure class="gf ${g.w?"w":""}"><button type="button" data-zoom="${g.src}" data-cap="${esc(g.t)}"><img src="${g.src}" alt="${esc(g.t)}" loading="lazy"></button><figcaption><span>${esc(g.t)}</span><a href="${g.src}" download="${esc(g.t)}.webp">⬇ 저장</a></figcaption></figure>`).join("");
-document.addEventListener("click",e=>{ const z=e.target.closest("[data-zoom]"); if(z){ const g=z.parentElement?[...z.parentElement.children].filter(n=>n.matches&&n.matches("[data-zoom]")):[z]; window.__lbList=g; window.__lbIdx=Math.max(0,g.indexOf(z)); zoom(z.dataset.zoom,z.dataset.cap); } });
+document.addEventListener("click",e=>{ const z=e.target.closest("[data-zoom]"); if(z){ const box=z.closest(".gallery,.papers,.ph"); const g=box?[...box.querySelectorAll("[data-zoom]")]:(z.parentElement?[...z.parentElement.children].filter(n=>n.matches&&n.matches("[data-zoom]")):[z]); window.__lbList=g; window.__lbIdx=Math.max(0,g.indexOf(z)); zoom(z.dataset.zoom,z.dataset.cap); } });
 
 // 퍼뜨리기
 const msgText = `민주노총 경북지역본부 16기 임원선거\n${slate} 후보조\n\n오늘을 치열하게! 내일은 치밀하게!\n\n· 투쟁 승리가 곧 조직화의 첩경, 단단한 경북본부\n· 정의로운 산업전환을 준비하는 당당한 경북본부\n· 산별과 지역을 잇는 든든한 경북본부\n\n투표: 11.19(목)~11.25(수)\n홈페이지: 2026경북본부선거.qaa.kr\n${pageUrl()}`;
