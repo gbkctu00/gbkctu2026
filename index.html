@@ -157,7 +157,7 @@ input.f,textarea.f{width:100%;padding:10px 12px;border:1px solid var(--line);bor
 textarea.f{min-height:130px;resize:vertical}
 .thumbs{display:flex;gap:6px;flex-wrap:wrap}
 .thumbs span{position:relative}
-.thumbs img{width:72px;height:72px;object-fit:cover;border-radius:4px}
+.thumbs img{width:72px;height:72px;object-fit:cover;border-radius:4px;white-space:nowrap}
 .thumbs button{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);font-size:13px;line-height:1;cursor:pointer}
 .status{font-size:14px;min-height:1.5em}
 
@@ -518,6 +518,8 @@ dialog.lb .lbGhost{will-change:transform;backface-visibility:hidden}
 .papers .pp b{font-family:var(--goth);font-weight:900;font-size:15px}
 .papers .pp b small{font-weight:500;color:var(--muted);font-size:12.5px;margin-left:4px}
 .papers .pp a{display:block;text-align:center;background:#1F2552;color:#fff;text-decoration:none;border-radius:6px;padding:7px 0;font-weight:700;font-size:13.5px}
+.post .ph button.paperpic img{object-position:50% 0}
+.post .ph .ptag{position:absolute;left:6px;top:6px;background:#D7263D;color:#fff;font-size:12px;font-weight:800;padding:3px 7px;border-radius:4px;white-space:nowrap}
 .post .foot a.dl{background:#1F2552;color:#fff!important;border-color:#1F2552!important}
 
 /* 공식 홍보물: 이미지 그대로 보이기 */
@@ -553,7 +555,7 @@ dialog.lb .lbGhost{will-change:transform;backface-visibility:hidden}
 }
 dialog.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1200px);max-height:92vh}
 dialog.lb::backdrop{background:rgba(8,10,22,.95)}
-dialog.lb img{max-width:min(96vw,1200px);max-height:86vh;object-fit:contain;margin:auto;border-radius:4px}
+dialog.lb img{max-width:min(96vw,1200px);max-height:86vh;object-fit:contain;margin:auto;border-radius:4px;white-space:nowrap}
 dialog.lb p{color:#fff;text-align:center;font-size:14px;padding:8px}
 dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:16px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:22px;cursor:pointer}
 </style>
@@ -888,18 +890,18 @@ function renderFeed(){
   const feed=$("feed");
   if(!list.length){ feed.innerHTML = `<div class="empty">곧 첫 선거운동 소식이 올라옵니다.<br>현장순회, 사업장 방문, 간담회 소식을 이곳에서 전합니다.</div>`; $("feedMore").hidden=true; return; }
   feed.innerHTML = list.slice(0,shown).map(p=>{
-    const n=dayNo(p.date), ph=(p.photos||[]).slice(0,16);
+    const n=dayNo(p.date), PP=PAPERS.find(x=>x.date===p.date), isP=PP&&NEWS.find(q=>q.date===p.date)===p, ph=(p.photos||[]).slice(0,16).map((s,i)=>({src:photoSrc(s),z:photoSrc(s),c:(p.captions&&p.captions[i])||(i===0?p.caption:"")||""})); if(isP) ph.push({src:PP.thumb,z:PP.file,c:`선거운동 소식 ${PP.day}일차 (${+PP.date.slice(5,7)}.${+PP.date.slice(8)})`,paper:1});
     const long=(p.body||"").length>320;
     return `<article class="post" id="n-${esc(p.id)}">
       <div class="bar"><img class="bi" src="img/fist_w.png" alt="">${n>=1?`<span class="day">${n}일차</span>`:""}<h3>${esc(p.title)}</h3><span class="meta">${fmtDate(p.date)}${p.place?" · "+esc(p.place):""}</span></div>
       ${p.sub?`<div class="sub">${esc(p.sub)}</div>`:""}
       <div class="page ${ph.length?"has":""}">
-        ${ph.length?`<div class="ph r${ph.length-1}">${ph.map((s,i)=>{ const c=(p.captions&&p.captions[i])||(i===0?p.caption:"")||""; return `<button type="button" class="${i===0?"lead":""}" data-zoom="${esc(photoSrc(s))}" data-cap="${esc(c||p.title)}"><img src="${esc(photoSrc(s))}" alt="${esc(c||p.title)}" loading="lazy">${i===0&&c?`<span class="cap">${esc(c)}</span>`:""}</button>`;}).join("")}</div>`:""}
+        ${ph.length?`<div class="ph r${ph.length-1}">${ph.map((o,i)=>{ const c=o.c; return `<button type="button" class="${i===0?"lead":""}${o.paper?" paperpic":""}" data-zoom="${esc(o.z)}" data-cap="${esc(c||p.title)}"><img src="${esc(o.src)}" alt="${esc(c||p.title)}" loading="lazy">${o.paper?`<span class="ptag">📄 소식지</span>`:""}${i===0&&c?`<span class="cap">${esc(c)}</span>`:""}</button>`;}).join("")}</div>`:""}
         ${p.body?`<div style="display:grid;gap:6px;min-width:0"><div class="txt ${long?"clip":""}">${fmtBody(p.body)}</div>${long?`<button class="more" type="button" data-unclip>▼ 기사 전체 읽기</button>`:""}</div>`:""}
       </div>
       <div class="foot">
         ${p.link?`<a class="btn sm ghost" href="${esc(p.link)}" target="_blank" rel="noopener">영상·자료 보기</a>`:""}
-        ${(()=>{const pp=PAPERS.find(x=>x.date===p.date); return pp&&NEWS.find(q=>q.date===p.date)===p?`<a class="btn sm ghost dl" href="${pp.file}" download="${pp.name}">⬇ 소식지 내려받기</a>`:"";})()}<button class="btn sm ghost" type="button" data-share="${esc(p.id)}">글 내용 복사하기</button>
+        <button class="btn sm ghost" type="button" data-share="${esc(p.id)}">글 내용 복사하기</button>
         ${canWrite?`<button class="btn sm ghost" type="button" data-edit="${esc(p.id)}">고치기</button><button class="btn sm ghost" type="button" data-del="${esc(p.id)}">지우기</button>`:""}
       </div></article>`;}).join("");
   $("feedMore").hidden = list.length<=shown;
