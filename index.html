@@ -526,7 +526,7 @@ dialog.lb .lbGhost{will-change:transform;backface-visibility:hidden}
 /* 공식 홍보물: 이미지 그대로 보이기 */
 #print .gallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start}
 #print .gallery .gf{margin:0;background:var(--surface);border-radius:8px;overflow:hidden;display:grid}
-#print .gallery .gf.w{grid-column:1/-1}
+#print .gallery .gf.w{grid-column:1/-1}.gf.pw button{max-width:560px;margin:0 auto;display:block;width:100%}.gf.pw figcaption{max-width:560px;margin-left:auto;margin-right:auto}.gf figcaption a+a{margin-left:6px}
 #print .gallery .gf button{border:0;padding:0;background:#fff;cursor:zoom-in;display:block}
 #print .gallery .gf img{width:100%;height:auto!important;aspect-ratio:auto!important;object-fit:contain!important;display:block}
 #print .gallery figcaption{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;font-size:13.5px;font-weight:700}
@@ -788,6 +788,7 @@ const SPEECH = [
   "동지 여러분. 낡은 관행은 과감히 도려내고, 가장 민주노총답게 현장 속으로 들어가겠습니다. 산별노조에 꼭 필요한 경북본부, 자본을 압도하는 주도적인 경북본부의 새로운 3년을 동지들과 함께 힘차게 출발하겠습니다. 투쟁!"
 ];
 const GALLERY = [
+  {src:"img/poster_main.webp", t:"공식 포스터", w:true, p:true, dl:"img/poster_main.pdf", dn:"공식포스터_송무근·최해술·신동연.pdf", dt:"⬇ 인쇄용 PDF"},
   {src:"img/poster_song.webp", t:"본부장 후보 송무근"},
   {src:"img/poster_choi.webp", t:"수석부본부장 후보 최해술"},
   {src:"img/poster_shin.webp", t:"사무처장 후보 신동연"},
@@ -853,7 +854,7 @@ $("speechBody").innerHTML = SPEECH.map(p=>`<p>${esc(p)}</p>`).join("") + `<p cla
 $("speechMore").onclick=()=>{ const b=$("speechBody"); const open=b.classList.toggle("clip"); $("speechMore").textContent = open ? "전문 읽기 ＋" : "접기 －"; };
 
 // 홍보물
-$("gallery").innerHTML = GALLERY.map(g=>`<figure class="gf ${g.w?"w":""}"><button type="button" data-zoom="${g.src}" data-cap="${esc(g.t)}"><img src="${g.src}" alt="${esc(g.t)}" loading="lazy"></button><figcaption><span>${esc(g.t)}</span><a href="${g.src}" download="${esc(g.t)}.webp">⬇ 저장</a></figcaption></figure>`).join("");
+$("gallery").innerHTML = GALLERY.map(g=>`<figure class="gf ${g.w?"w":""} ${g.p?"pw":""}"><button type="button" data-zoom="${g.src}" data-cap="${esc(g.t)}"><img src="${g.src}" alt="${esc(g.t)}" loading="lazy"></button><figcaption><span>${esc(g.t)}</span>${g.dl?`<a href="${g.src}" download="${esc(g.t)}.webp">⬇ 이미지</a><a href="${g.dl}" download="${esc(g.dn)}">${g.dt}</a>`:`<a href="${g.src}" download="${esc(g.t)}.webp">⬇ 저장</a>`}</figcaption></figure>`).join("");
 document.addEventListener("click",e=>{ const z=e.target.closest("[data-zoom]"); if(z){ const box=z.closest(".gallery,.papers,.ph"); const g=box?[...box.querySelectorAll("[data-zoom]")]:(z.parentElement?[...z.parentElement.children].filter(n=>n.matches&&n.matches("[data-zoom]")):[z]); window.__lbList=g; window.__lbIdx=Math.max(0,g.indexOf(z)); zoom(z.dataset.zoom,z.dataset.cap); } });
 
 // 퍼뜨리기
