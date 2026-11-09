@@ -891,7 +891,7 @@ function renderFeed(){
   const feed=$("feed");
   if(!list.length){ feed.innerHTML = `<div class="empty">곧 첫 선거운동 소식이 올라옵니다.<br>현장순회, 사업장 방문, 간담회 소식을 이곳에서 전합니다.</div>`; $("feedMore").hidden=true; return; }
   feed.innerHTML = list.slice(0,shown).map(p=>{
-    const n=dayNo(p.date), PP=PAPERS.find(x=>x.date===p.date), isP=PP&&NEWS.find(q=>q.date===p.date)===p, ph=(p.photos||[]).slice(0,16).map((s,i)=>({src:photoSrc(s),z:photoSrc(s),c:(p.captions&&p.captions[i])||(i===0?p.caption:"")||""})); if(isP) ph.push({src:PP.thumb,z:PP.file,c:`선거운동 소식 ${PP.day}일차 (${+PP.date.slice(5,7)}.${+PP.date.slice(8)})`,paper:1});
+    const n=dayNo(p.date), PP=PAPERS.find(x=>x.date===p.date), isP=PP&&NEWS.find(q=>q.date===p.date)===p, ph=(p.photos||[]).slice(0,16).map((s,i)=>({src:photoSrc(s),z:photoSrc(s),c:(p.captions&&p.captions[i])||(i===0?p.caption:"")||""})); if(isP) ph.push({src:PP.thumb,z:(PP.view||PP.file),c:`선거운동 소식 ${PP.day}일차 (${+PP.date.slice(5,7)}.${+PP.date.slice(8)})`,paper:1});
     const long=(p.body||"").length>320;
     return `<article class="post" id="n-${esc(p.id)}">
       <div class="bar"><img class="bi" src="img/fist_w.png" alt="">${n>=1?`<span class="day">${n}일차</span>`:""}<h3>${esc(p.title)}</h3><span class="meta">${fmtDate(p.date)}${p.place?" · "+esc(p.place):""}</span></div>
@@ -920,7 +920,7 @@ async function loadNews(){
   try{ const r=await fetch("news.json",{cache:"no-store"}); if(r.ok){ const j=await r.json(); NEWS=Array.isArray(j.posts)?j.posts:[]; } }catch(_){ NEWS=[]; }
   try{ const r2=await fetch("paper.json",{cache:"no-store"}); if(r2.ok){ PAPERS=await r2.json(); } }catch(_){ PAPERS=[]; }
   try{ const md=d=>{const [y,m,dd]=d.split("-");return `${+m}.${+dd}`;}; const dw=d=>"일월화수목금토"[new Date(d+"T00:00:00+09:00").getDay()];
-    $("papers").innerHTML=PAPERS.map(p=>`<div class="pp"><button type="button" data-zoom="${p.file}" data-cap="선거운동 소식 ${p.day}일차 (${md(p.date)})"><img src="${p.thumb}" alt="선거운동 소식 ${p.day}일차" loading="lazy"></button><div class="pi"><b>${p.day}일차<small>${md(p.date)}(${dw(p.date)})</small></b><a href="${p.file}" download="${p.name}">⬇ 내려받기</a></div></div>`).join(""); }catch(_){}
+    $("papers").innerHTML=PAPERS.map(p=>`<div class="pp"><button type="button" data-zoom="${p.view||p.file}" data-cap="선거운동 소식 ${p.day}일차 (${md(p.date)})"><img src="${p.thumb}" alt="선거운동 소식 ${p.day}일차" loading="lazy"></button><div class="pi"><b>${p.day}일차<small>${md(p.date)}(${dw(p.date)})</small></b><a href="${p.file}" download="${p.name}">⬇ 내려받기</a></div></div>`).join(""); }catch(_){}
   renderFeed();
   const h=location.hash; if(/^#n-[\w-]+$/.test(h) && $(h.slice(1))) $(h.slice(1)).scrollIntoView();
 }

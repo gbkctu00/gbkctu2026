@@ -5,7 +5,8 @@
   "date": "2026-11-09",
   "file": "paper/1109.jpg",
   "thumb": "paper/1109_s.jpg",
-  "name": "선거운동소식_16일차_11.09.jpg"
+  "name": "선거운동소식_16일차_11.09.jpg",
+  "view": "paper/1109_m.jpg"
  },
  {
   "day": 14,
@@ -13,7 +14,8 @@
   "date": "2026-11-07",
   "file": "paper/1107.jpg",
   "thumb": "paper/1107_s.jpg",
-  "name": "선거운동소식_14일차_11.07.jpg"
+  "name": "선거운동소식_14일차_11.07.jpg",
+  "view": "paper/1107_m.jpg"
  },
  {
   "day": 12,
@@ -21,7 +23,8 @@
   "date": "2026-11-05",
   "file": "paper/1105.jpg",
   "thumb": "paper/1105_s.jpg",
-  "name": "선거운동소식_12일차_11.05.jpg"
+  "name": "선거운동소식_12일차_11.05.jpg",
+  "view": "paper/1105_m.jpg"
  },
  {
   "day": 11,
@@ -29,7 +32,8 @@
   "date": "2026-11-04",
   "file": "paper/1104.jpg",
   "thumb": "paper/1104_s.jpg",
-  "name": "선거운동소식_11일차_11.04.jpg"
+  "name": "선거운동소식_11일차_11.04.jpg",
+  "view": "paper/1104_m.jpg"
  },
  {
   "day": 10,
@@ -37,7 +41,8 @@
   "date": "2026-11-03",
   "file": "paper/1103.jpg",
   "thumb": "paper/1103_s.jpg",
-  "name": "선거운동소식_10일차_11.03.jpg"
+  "name": "선거운동소식_10일차_11.03.jpg",
+  "view": "paper/1103_m.jpg"
  },
  {
   "day": 9,
@@ -45,7 +50,8 @@
   "date": "2026-11-02",
   "file": "paper/1102.jpg",
   "thumb": "paper/1102_s.jpg",
-  "name": "선거운동소식_9일차_11.02.jpg"
+  "name": "선거운동소식_9일차_11.02.jpg",
+  "view": "paper/1102_m.jpg"
  },
  {
   "day": 7,
@@ -53,7 +59,8 @@
   "date": "2026-10-31",
   "file": "paper/1031.jpg",
   "thumb": "paper/1031_s.jpg",
-  "name": "선거운동소식_7일차_10.31.jpg"
+  "name": "선거운동소식_7일차_10.31.jpg",
+  "view": "paper/1031_m.jpg"
  },
  {
   "day": 6,
@@ -61,7 +68,8 @@
   "date": "2026-10-30",
   "file": "paper/1030.jpg",
   "thumb": "paper/1030_s.jpg",
-  "name": "선거운동소식_6일차_10.30.jpg"
+  "name": "선거운동소식_6일차_10.30.jpg",
+  "view": "paper/1030_m.jpg"
  },
  {
   "day": 4,
@@ -69,7 +77,8 @@
   "date": "2026-10-28",
   "file": "paper/1028.jpg",
   "thumb": "paper/1028_s.jpg",
-  "name": "선거운동소식_4일차_10.28.jpg"
+  "name": "선거운동소식_4일차_10.28.jpg",
+  "view": "paper/1028_m.jpg"
  },
  {
   "day": 3,
@@ -77,7 +86,8 @@
   "date": "2026-10-27",
   "file": "paper/1027.jpg",
   "thumb": "paper/1027_s.jpg",
-  "name": "선거운동소식_3일차_10.27.jpg"
+  "name": "선거운동소식_3일차_10.27.jpg",
+  "view": "paper/1027_m.jpg"
  },
  {
   "day": 2,
@@ -85,6 +95,7 @@
   "date": "2026-10-26",
   "file": "paper/1026.jpg",
   "thumb": "paper/1026_s.jpg",
-  "name": "선거운동소식_2일차_10.26.jpg"
+  "name": "선거운동소식_2일차_10.26.jpg",
+  "view": "paper/1026_m.jpg"
  }
 ]
