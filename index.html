@@ -529,6 +529,7 @@ dialog.lb .lbGhost{will-change:transform;backface-visibility:hidden}
 .papers .pp b small{font-weight:500;color:var(--muted);font-size:12.5px;margin-left:4px}
 .papers .pp a{display:block;text-align:center;background:#1F2552;color:#fff;text-decoration:none;border-radius:6px;padding:7px 0;font-weight:700;font-size:13.5px}
 .post .ph button.paperpic img{object-position:50% 0}
+.post .vid{margin:0 0 10px}.post .vid video{width:100%;aspect-ratio:16/9;background:#000;border-radius:6px;display:block}.post .vid figcaption{font-size:13px;font-weight:700;color:#D7263D;margin-top:4px}
 .post .ph .ptag{position:absolute;left:6px;top:6px;background:#D7263D;color:#fff;font-size:12px;font-weight:800;padding:3px 7px;border-radius:4px;white-space:nowrap}
 .post .foot a.dl{background:#1F2552;color:#fff!important;border-color:#1F2552!important}
 
@@ -908,6 +909,7 @@ function renderFeed(){
       <div class="bar"><img class="bi" src="img/fist_w.png" alt="">${n>=1?`<span class="day">${n}일차</span>`:""}<h3>${esc(p.title)}</h3><span class="meta">${fmtDate(p.date)}${p.place?" · "+esc(p.place):""}</span></div>
       ${p.sub?`<div class="sub">${esc(p.sub)}</div>`:""}
       <div class="page ${ph.length?"has":""}">
+        ${p.video?`<figure class="vid"><video src="${esc(p.video)}" poster="${esc(p.vposter||"")}" controls playsinline preload="none"></video><figcaption>▶ ${esc(p.vcap||"현장 영상")}</figcaption></figure>`:""}
         ${ph.length?`<div class="ph r${ph.length-1}">${ph.map((o,i)=>{ const c=o.c; return `<button type="button" class="${i===0?"lead":""}${o.paper?" paperpic":""}" data-zoom="${esc(o.z)}" data-cap="${esc(c||p.title)}"><img src="${esc(o.src)}" alt="${esc(c||p.title)}" loading="lazy">${o.paper?`<span class="ptag">📄 소식지</span>`:""}${i===0&&c?`<span class="cap">${esc(c)}</span>`:""}</button>`;}).join("")}</div>`:""}
         ${p.body?`<div style="display:grid;gap:6px;min-width:0"><div class="txt ${long?"clip":""}">${fmtBody(p.body)}</div>${long?`<button class="more" type="button" data-unclip>▼ 기사 전체 읽기</button>`:""}</div>`:""}
       </div>
