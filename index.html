@@ -200,10 +200,11 @@ textarea.f{min-height:130px;resize:vertical}
 .speech .body.clip{max-height:15em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 60%,transparent)}
 .speech .sign{font-weight:700}
 .speech .spic{display:none;margin:0}
-@media (min-width:900px){
- .speech{grid-template-columns:minmax(0,1fr) minmax(300px,38%);column-gap:40px;align-items:start}
+@media (min-width:720px){
+ .speech{grid-template-columns:minmax(0,1fr) minmax(240px,38%);column-gap:32px;align-items:start}
  .speech>*:not(.spic){grid-column:1}
  .speech .spic{display:block;grid-column:2;grid-row:1/span 4;align-self:start;position:sticky;top:84px}
+ .speech .spic>button{position:relative}
  .speech .spic button{border:0;padding:0;background:none;cursor:zoom-in;display:block;width:100%;aspect-ratio:4/3;border-radius:6px;overflow:hidden}
  .speech .spic img{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block}
  .speech .spic figcaption{position:absolute;left:0;bottom:0;background:rgba(20,24,60,.72);color:#fff;font-size:13px;font-weight:700;padding:6px 10px;border-radius:0 6px 0 6px}
