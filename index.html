@@ -256,6 +256,16 @@ footer b{color:var(--ink)}
 .pend{position:relative;display:block;cursor:pointer}
 .pend img{filter:grayscale(1) blur(2px);opacity:.28}
 .pend::after{content:"선관위 승인 후 공개 예정";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(24,27,51,.88);color:#fff;font-weight:700;font-size:13px;line-height:1.35;padding:6px 12px;border-radius:12px;text-align:center;width:max-content;max-width:86%;pointer-events:none}
+#press{padding-block:22px 0}
+#press .pcard{display:grid;grid-template-columns:200px 1fr;gap:0;background:#fff;border:1px solid #E2E2E6;border-radius:14px;overflow:hidden;text-decoration:none;color:#1A1A1A;box-shadow:0 4px 18px rgba(20,24,60,.08);transition:transform .15s}
+#press .pcard:hover{transform:translateY(-2px)}
+#press .pcard img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block;min-height:130px}
+#press .pbody{padding:16px 20px;display:grid;gap:6px;align-content:center}
+#press .ptag2{font-size:12px;font-weight:800;color:#A3121E;letter-spacing:.04em}
+#press .pttl{font-size:18px;font-weight:900;line-height:1.4}
+#press .psrc{font-size:13px;color:#6B6B75}
+#press .pgo{justify-self:start;margin-top:4px;font-size:13px;font-weight:800;color:#fff;background:#1F2552;padding:7px 14px;border-radius:999px}
+@media (max-width:560px){#press .pcard{grid-template-columns:1fr}#press .pcard img{height:160px}}
 #news{padding-top:28px}
 #editorSlot:empty{display:none}
 .nhead{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;background:#1F2552;color:#fff;border-radius:8px;padding:14px 16px;border-left:8px solid #C8102E;box-shadow:0 2px 0 rgba(0,0,0,.08)}
@@ -610,6 +620,18 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
       <a href="#p-dang" style="--c:#6E2A5A">정의로운 산업전환을 준비하는 <b>당당한 경북본부!</b></a>
       <a href="#p-deun" style="--c:#1F2552">산별과 지역을 잇는 <b>든든한 경북본부!</b></a>
     </nav>
+  </section>
+
+  <section id="press">
+    <a class="pcard" href="https://www.newsmin.co.kr/news/138991/" target="_blank" rel="noopener">
+      <img src="news/1116/nw03.jpg" alt="뉴스민 인터뷰 세 후보">
+      <div class="pbody">
+        <span class="ptag2">📰 언론 보도</span>
+        <span class="pttl">송무근·최해술·신동연 후보조, 뉴스민 인터뷰<br>“경북 노동의 길을 말하다”</span>
+        <span class="psrc">뉴스민 · 2026.11.16</span>
+        <span class="pgo">기사 읽기 ↗</span>
+      </div>
+    </a>
   </section>
 
   <section id="news">
