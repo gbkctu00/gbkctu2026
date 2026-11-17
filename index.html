@@ -1,19 +1,6 @@
-<!doctype html>
-<html lang="ko" data-theme="light" style="color-scheme:only light">
-<head>
-<meta charset="utf-8">
-<meta name="color-scheme" content="only light">
-<meta name="supported-color-schemes" content="light only">
-<meta name="darkreader-lock">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="민주노총 경북지역본부 16기 임원선거 단독후보 송무근·최해술·신동연 — 오늘을 치열하게! 내일은 치밀하게!">
-<meta property="og:type" content="website">
-<meta property="og:title" content="오늘을 치열하게! 내일은 치밀하게! · 송무근·최해술·신동연">
-<meta property="og:description" content="민주노총 경북지역본부 16기 임원선거 단독후보 · 투표 11.19(목)~11.25(수)">
-<meta property="og:image" content="https://gbkctu2026.vercel.app/img/og.jpg">
-<meta property="og:url" content="https://gbkctu2026.vercel.app/">
-<style>body{margin:0}</style>
+<script>document.documentElement.setAttribute("data-theme","light");document.documentElement.style.colorScheme="only light";</script>
 <title>오늘을 치열하게! 내일은 치밀하게!</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&family=Noto+Sans+KR:wght@500;700;900&family=Noto+Serif+KR:wght@500;700&display=swap">
 <style>
@@ -572,8 +559,7 @@ dialog.lb img{max-width:min(96vw,1200px);max-height:86vh;object-fit:contain;marg
 dialog.lb p{color:#fff;text-align:center;font-size:14px;padding:8px}
 dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:16px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:22px;cursor:pointer}
 </style>
-</head>
-<body>
+
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#home"><span class="badge" id="badge">단독후보</span><span>송무근·최해술·신동연</span></a>
@@ -1212,7 +1198,4 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
   new MutationObserver(()=>{ lb.classList.remove("clean"); if(lb.open){ reset(); lock(true); pin(); ui(); img.style.opacity=1; busy=false; gh.style.opacity=0; ghI=-1; setGhost((window.__lbIdx||0)+1); preload((window.__lbIdx||0)+1); preload((window.__lbIdx||0)-1); } else { reset(); lock(false); c1.style.cssText=""; gh.removeAttribute("src"); ghI=-1; gh.style.opacity=0; } }).observe(lb,{attributes:true,attributeFilter:["open"]});
 })();
 </script>
-
 <script>document.addEventListener("click",e=>{ const b=e.target.closest(".first .board"); if(!b||e.target.closest("a,button")) return; const a=document.querySelector('.pcnav a[href="#cand"]'); if(!a) return; e.preventDefault(); a.click(); });</script>
-</body>
-</html>
