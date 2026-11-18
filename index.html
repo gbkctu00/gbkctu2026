@@ -266,7 +266,7 @@ footer b{color:var(--ink)}
 .vbox .vstat{display:inline-flex;align-items:center;gap:8px;justify-self:start;background:#fff;color:#A3121E;font-weight:900;font-size:16px;padding:8px 16px;border-radius:999px}
 .vbox .vstat i{width:9px;height:9px;border-radius:50%;background:#D7263D;animation:vb 1.2s infinite}
 @keyframes vb{50%{opacity:.25}}
-.vbox .vways{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.vbox .vways{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .vbox .vw{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 14px;display:grid;gap:4px}
 .vbox .vw b{font-size:17px}.vbox .vw span{font-size:13.5px;opacity:.9;line-height:1.5}
 .vbox .vnote{font-size:13.5px;opacity:.9;margin:0}
@@ -606,7 +606,6 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
       <div class="vways">
         <div class="vw"><b>🗳️ 현장투표</b><span>투표 일시·장소는 소속 단위조직별로 공지합니다</span></div>
         <div class="vw"><b>📱 전자투표</b><span>투표 기간 중 매일 진행합니다</span></div>
-        <div class="vw"><b>✉️ 우편투표</b><span>해당 조합원께 별도로 안내합니다</span></div>
       </div>
       <p class="vnote">투표 방식과 장소는 단위마다 다릅니다. 소속 조직(산별·지부·지회) 선거관리위원회 안내를 꼭 확인해 주세요. 한 분 한 분의 참여가 민주노조운동의 힘입니다.</p>
       <div class="vrow"><a href="#vote">투표 일정 보기</a><a class="g" href="#spread">투표 독려 퍼뜨리기</a></div>
@@ -852,7 +851,7 @@ const GALLERY = [
 const SCHED = [
   {d:"2026-10-24", label:"10.24(토)", t:"선관위·후보자 합동회의", s:""},
   {d:"2026-10-25", label:"10.25(일)~", t:"선거운동", s:"11.18(수) 24시까지"},
-  {d:"2026-11-19", label:"11.19(목)~25(수)", t:"투표 기간 7일", s:"현장투표(단위조직별 공지)·전자투표(매일)·우편투표(별도 안내)", key:true},
+  {d:"2026-11-19", label:"11.19(목)~25(수)", t:"투표 기간 7일", s:"현장투표(단위조직별 공지)·전자투표(매일)", key:true},
   {d:"2026-11-26", label:"11.26(목)~27(금)", t:"당선자 공고", s:""}
 ];
 /* =============================== */
