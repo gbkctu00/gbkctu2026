@@ -619,7 +619,7 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
         <div class="vw"><b>📱 전자투표</b><span>투표 기간 중 매일 진행합니다</span></div>
       </div>
       <p class="vnote">투표 방식과 장소는 단위마다 다릅니다. 소속 조직(산별·지부·지회) 선거관리위원회 안내를 꼭 확인해 주세요. 한 분 한 분의 참여가 민주노조운동의 힘입니다.</p>
-      <div class="vrow"><a href="#vote">투표 일정 보기</a><a class="g" href="#spread">투표 독려 퍼뜨리기</a></div>
+      <div class="vrow"><a href="#vote">투표 일정 보기</a><a class="g" href="#" id="voteShare">투표 독려 문안 보내기</a></div>
     </div>
     <div class="org"><b>민주노총 경북지역본부</b> 16기 임원선거 단독후보</div>
     <div class="board">
@@ -1267,3 +1267,20 @@ const st=new Date(2026,10,19),en=new Date(2026,10,26);const t=el.querySelector("
 if(now<st){const d=Math.ceil((st-now)/864e5);t.textContent=d<=1?"내일부터 투표 시작!":`투표 시작까지 D-${d}`;}
 else if(now<en){const d=Math.floor((now-st)/864e5)+1,left=Math.ceil((en-now)/864e5);t.textContent=`투표 ${d}일째 · ${left<=1?"오늘 마감!":"마감까지 "+left+"일"}`;}
 else{t.textContent="투표가 마감되었습니다. 함께해 주셔서 감사합니다";el.querySelector("i").style.display="none";}})();</script>
+<script>(()=>{const b=document.getElementById("voteShare");if(!b)return;
+const T=`🗳️ 민주노총 임원선거 투표 안내
+
+조합원 동지 여러분, 투표로 함께해 주십시오!
+
+📅 투표 기간: 11월 19일(목) ~ 11월 25일(수) 7일간
+✅ 현장투표: 투표 일시·장소는 소속 단위조직별 공지
+✅ 전자투표: 투표 기간 중 매일 진행
+
+투표 방식과 장소는 단위마다 다릅니다. 소속 조직 선거관리위원회 안내를 꼭 확인해 주세요.
+한 분 한 분의 참여가 민주노조운동의 힘입니다.
+
+https://gbkctu2026.vercel.app`;
+b.addEventListener("click",async e=>{e.preventDefault();
+ if(navigator.share){try{await navigator.share({text:T});return;}catch(err){if(err&&err.name==="AbortError")return;}}
+ try{await navigator.clipboard.writeText(T);}catch(_){const ta=document.createElement("textarea");ta.value=T;document.body.appendChild(ta);ta.select();try{document.execCommand("copy")}catch(__){}ta.remove();}
+ const t=document.getElementById("toast");if(t){t.textContent="투표 독려 문안을 복사했어요. 카톡에 붙여 넣어 주세요";t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2600);}});})();</script>
