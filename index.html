@@ -256,6 +256,24 @@ footer b{color:var(--ink)}
 .pend{position:relative;display:block;cursor:pointer}
 .pend img{filter:grayscale(1) blur(2px);opacity:.28}
 .pend::after{content:"선관위 승인 후 공개 예정";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(24,27,51,.88);color:#fff;font-weight:700;font-size:13px;line-height:1.35;padding:6px 12px;border-radius:12px;text-align:center;width:max-content;max-width:86%;pointer-events:none}
+
+.vbox{display:grid;gap:14px;background:linear-gradient(135deg,#1F2552 0%,#2B1450 60%,#A3121E 140%);color:#fff;border-radius:18px;padding:26px 24px;box-shadow:0 10px 30px rgba(20,24,60,.25);position:relative;overflow:hidden}
+.vbox::after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.06)}
+.vbox .vk{font-size:13px;font-weight:800;letter-spacing:.08em;color:#FFDE59}
+.vbox h2{margin:0;font-size:clamp(30px,6vw,50px);font-weight:900;line-height:1.15;color:#fff}
+.vbox h2 em{font-style:normal;color:#FFDE59}
+.vbox .vdate{font-size:clamp(17px,3vw,22px);font-weight:800}
+.vbox .vstat{display:inline-flex;align-items:center;gap:8px;justify-self:start;background:#fff;color:#A3121E;font-weight:900;font-size:16px;padding:8px 16px;border-radius:999px}
+.vbox .vstat i{width:9px;height:9px;border-radius:50%;background:#D7263D;animation:vb 1.2s infinite}
+@keyframes vb{50%{opacity:.25}}
+.vbox .vways{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.vbox .vw{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 14px;display:grid;gap:4px}
+.vbox .vw b{font-size:17px}.vbox .vw span{font-size:13.5px;opacity:.9;line-height:1.5}
+.vbox .vnote{font-size:13.5px;opacity:.9;margin:0}
+.vbox .vrow{display:flex;flex-wrap:wrap;gap:8px}
+.vbox .vrow a{font-weight:800;font-size:14px;padding:9px 16px;border-radius:999px;text-decoration:none;background:#FFDE59;color:#1A1A1A}
+.vbox .vrow a.g{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+@media (max-width:640px){.vbox .vways{grid-template-columns:1fr}.vbox{padding:22px 18px}}
 #press{padding-block:22px 0}
 #press .pcard{display:grid;grid-template-columns:200px 1fr;gap:0;background:#fff;border:1px solid #E2E2E6;border-radius:14px;overflow:hidden;text-decoration:none;color:#1A1A1A;box-shadow:0 4px 18px rgba(20,24,60,.08);transition:transform .15s}
 #press .pcard:hover{transform:translateY(-2px)}
@@ -580,6 +598,19 @@ dialog.lb button{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));ri
 
 <main class="wrap">
   <section class="first" id="home">
+    <div class="vbox" id="vbox">
+      <span class="vk">2026 민주노총·지역본부 임원 동시선거</span>
+      <h2>조합원 동지 여러분,<br><em>투표로 함께해 주십시오!</em></h2>
+      <div class="vdate">투표 기간 · 11월 19일(목) ~ 11월 25일(수) 7일간</div>
+      <span class="vstat" id="vStat"><i></i><span>투표 진행 중</span></span>
+      <div class="vways">
+        <div class="vw"><b>🗳️ 현장투표</b><span>투표 일시·장소는 소속 단위조직별로 공지합니다</span></div>
+        <div class="vw"><b>📱 전자투표</b><span>투표 기간 중 매일 진행합니다</span></div>
+        <div class="vw"><b>✉️ 우편투표</b><span>해당 조합원께 별도로 안내합니다</span></div>
+      </div>
+      <p class="vnote">투표 방식과 장소는 단위마다 다릅니다. 소속 조직(산별·지부·지회) 선거관리위원회 안내를 꼭 확인해 주세요. 한 분 한 분의 참여가 민주노조운동의 힘입니다.</p>
+      <div class="vrow"><a href="#vote">투표 일정 보기</a><a class="g" href="#spread">투표 독려 퍼뜨리기</a></div>
+    </div>
     <div class="org"><b>민주노총 경북지역본부</b> 16기 임원선거 단독후보</div>
     <div class="board">
       <img class="wide" src="img/banner.webp" width="1920" height="850" alt="오늘을 치열하게! 내일은 치밀하게! 사무처장 후보 신동연, 본부장 후보 송무근, 수석부본부장 후보 최해술">
@@ -821,8 +852,8 @@ const GALLERY = [
 const SCHED = [
   {d:"2026-10-24", label:"10.24(토)", t:"선관위·후보자 합동회의", s:""},
   {d:"2026-10-25", label:"10.25(일)~", t:"선거운동", s:"11.18(수) 24시까지"},
-  {d:"2026-11-19", label:"11.19(목)~25(수)", t:"투표 기간 7일", s:"현장·온라인 등 단위별 방식으로", key:true},
-  {d:"2026-11-26", label:"11.26~27", t:"당선자 공고", s:""}
+  {d:"2026-11-19", label:"11.19(목)~25(수)", t:"투표 기간 7일", s:"현장투표(단위조직별 공지)·전자투표(매일)·우편투표(별도 안내)", key:true},
+  {d:"2026-11-26", label:"11.26(목)~27(금)", t:"당선자 공고", s:""}
 ];
 /* =============================== */
 
@@ -1221,3 +1252,8 @@ document.addEventListener("click",e=>{ const a=e.target.closest(".pcnav a, .tabs
 })();
 </script>
 <script>document.addEventListener("click",e=>{ const b=e.target.closest(".first .board"); if(!b||e.target.closest("a,button")) return; const a=document.querySelector('.pcnav a[href="#cand"]'); if(!a) return; e.preventDefault(); a.click(); });</script>
+<script>(()=>{const el=document.getElementById("vStat");if(!el)return;const now=new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Seoul"}));
+const st=new Date(2026,10,19),en=new Date(2026,10,26);const t=el.querySelector("span");
+if(now<st){const d=Math.ceil((st-now)/864e5);t.textContent=d<=1?"내일부터 투표 시작!":`투표 시작까지 D-${d}`;}
+else if(now<en){const d=Math.floor((now-st)/864e5)+1,left=Math.ceil((en-now)/864e5);t.textContent=`투표 ${d}일째 · ${left<=1?"오늘 마감!":"마감까지 "+left+"일"}`;}
+else{t.textContent="투표가 마감되었습니다. 함께해 주셔서 감사합니다";el.querySelector("i").style.display="none";}})();</script>
